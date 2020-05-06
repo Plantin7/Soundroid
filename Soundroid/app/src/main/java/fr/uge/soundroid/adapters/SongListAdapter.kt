@@ -37,8 +37,13 @@ class SongListAdapter(private val songs:List<Song>) : RecyclerView.Adapter<SongL
 
         /** A song has been clicked */
         override fun onClick(v: View) {
-            mClickListener.onItemClick(v, adapterPosition)
+            mClickListener.onItemClick(v, getMusic(adapterPosition))
         }
+    }
+
+    /** */
+    private fun getMusic(position:Int): Song {
+        return songs[position]
     }
 
     /** Create a viewHolder*/
@@ -58,6 +63,6 @@ class SongListAdapter(private val songs:List<Song>) : RecyclerView.Adapter<SongL
 
     /** parent activity will implement this method to respond to click events */
     interface ItemClickListener {
-        fun onItemClick(view: View, position: Int)
+        fun onItemClick(view: View, song:Song)
     }
 }

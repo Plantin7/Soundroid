@@ -11,10 +11,12 @@ import fr.uge.soundroid.adapters.SongListAdapter
 import fr.uge.soundroid.models.Song
 import android.Manifest
 import android.content.pm.PackageManager
+import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import fr.uge.soundroid.adapters.SongListAdapter.ItemClickListener
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ItemClickListener {
 
     private lateinit var recyclerView: RecyclerView
     private val songModelData: ArrayList<Song> = ArrayList()
@@ -60,5 +62,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    override fun onItemClick(view: View, song: Song) {
     }
 }
