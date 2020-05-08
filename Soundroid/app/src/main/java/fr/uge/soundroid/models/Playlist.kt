@@ -1,19 +1,29 @@
 package fr.uge.soundroid.models
 
-data class Playlist(val title: String) {
+import io.realm.RealmList
+import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
+import io.realm.annotations.Required
 
-    val soundtracks: HashMap<Int, Soundtrack> = HashMap()
+open class Playlist(
+    @PrimaryKey
+    var id: Int? = null,
 
-    fun addSoundtrackList(list: List<Soundtrack>): Playlist {
-        for ( soundtrack in list ) {
-            soundtracks[soundtrack.hashCode()] = soundtrack
-        }
+    @Required
+    var title: String? = null) : RealmObject() {
 
+    var soundtracks = RealmList<Soundtrack>()
+
+    fun addSoundtrack(soundtrack: Soundtrack): Playlist {
+        soundtracks.add(soundtrack)
         return this
     }
 
-    fun addSoundtrack(soundtrack: Soundtrack): Playlist {
-        soundtracks[soundtrack.hashCode()] = soundtrack
+    fun addSoundtrackList(list: List<Soundtrack>): Playlist {
+        for ( soundtrack in list ) {
+            addSoundtrack(soundtrack)
+        }
+
         return this
     }
 
