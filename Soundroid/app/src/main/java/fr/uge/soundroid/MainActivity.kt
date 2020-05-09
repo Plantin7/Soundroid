@@ -8,13 +8,17 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.soundroid.adapters.SongListAdapter
-import fr.uge.soundroid.models.Song
 import android.Manifest
 import android.content.pm.PackageManager
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import fr.uge.soundroid.adapters.SongListAdapter.ItemClickListener
+import fr.uge.soundroid.models.*
+import fr.uge.soundroid.repositories.ArtistRepository
+import fr.uge.soundroid.repositories.PlaylistRepository
+import fr.uge.soundroid.repositories.SoundtrackRepository
 
 class MainActivity : AppCompatActivity(), ItemClickListener {
 
@@ -30,6 +34,38 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         recyclerView = findViewById(R.id.recyclerView)
+
+        /* Guillaume tests : */
+        val artist1 = Artist().apply {
+            name = "artist 1"
+        }
+
+        val album1 = Album().apply {
+            name = "album 1"
+            artist = artist1
+        }
+
+        val soundtrack1 = Soundtrack().apply {
+            title = "soundtrack1"
+            artist = artist1
+            album = album1
+            path = "test/path"
+            seconds = 10
+        }
+
+        val playlist = Playlist().apply {
+            title = "playlist1"
+            soundtracks.add(soundtrack1)
+        }
+
+        // to save :
+        PlaylistRepository.savePlaylist(playlist)
+
+        val getSoundtrack = SoundtrackRepository.findSingleSoundtrack(mapOf("title" to "soundtrack1"))
+        Log.i("GUILLAUME", "soundtrack = $getSoundtrack")
+        Log.i("GUILLAUME", "$getSoundtrack artist = ${getSoundtrack?.artist?.name}")
+        Log.i("GUILLAUME", "PLAYLIST = $playlist FIRSTSONG = ${playlist.soundtracks.first()?.title}")
+        /* End guillaume tests*/
 
         if(ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE)
