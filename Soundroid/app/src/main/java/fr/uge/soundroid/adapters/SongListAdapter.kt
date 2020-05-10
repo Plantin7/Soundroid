@@ -61,6 +61,11 @@ class SongListAdapter(private val songs:List<Song>) : RecyclerView.Adapter<SongL
         return songs.size
     }
 
+    /** allows clicks events to be caught */
+    fun setClickListener(itemClickListener: ItemClickListener) {
+        mClickListener = itemClickListener
+    }
+
     /** parent activity will implement this method to respond to click events */
     interface ItemClickListener {
         fun onItemClick(view: View, song:Song)
