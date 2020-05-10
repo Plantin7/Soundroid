@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".utils.RequiringPermissionActivity" />
-        <activity android:name=".activities.SoundroidActivity"
+        <activity android:name=".activities.main.SoundroidActivity"
             android:label="@string/title_main_activity"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">

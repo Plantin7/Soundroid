@@ -1,4 +1,4 @@
-package fr.uge.soundroid.activities.ui.main
+package fr.uge.soundroid.activities.main
 
 import android.content.Context
 import androidx.fragment.app.Fragment

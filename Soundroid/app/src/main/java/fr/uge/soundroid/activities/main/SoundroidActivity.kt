@@ -1,7 +1,6 @@
-package fr.uge.soundroid.activities
+package fr.uge.soundroid.activities.main
 
 import android.Manifest
-import android.content.Intent
 import android.database.Cursor
 import android.os.Build
 import android.os.Bundle
@@ -10,17 +9,12 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import fr.uge.soundroid.R
-import fr.uge.soundroid.activities.ui.main.SectionsPagerAdapter
-import fr.uge.soundroid.adapters.SongListAdapter
 import fr.uge.soundroid.adapters.SongListAdapter.ItemClickListener
 import fr.uge.soundroid.models.Song
 import fr.uge.soundroid.utils.RequiringPermissionActivity
-import kotlinx.android.synthetic.main.item_song.*
 
 
 /**
@@ -34,7 +28,11 @@ class SoundroidActivity : RequiringPermissionActivity(), ItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_soundroid)
-        val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
+        val sectionsPagerAdapter =
+            SectionsPagerAdapter(
+                this,
+                supportFragmentManager
+            )
         val viewPager: ViewPager = findViewById(R.id.view_pager)
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = findViewById(R.id.tabs)
