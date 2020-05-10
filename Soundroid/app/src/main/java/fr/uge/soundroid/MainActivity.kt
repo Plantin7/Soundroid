@@ -40,18 +40,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     }
 
     fun loadData() {
-        // TODO Change the position of this code
-        var songCursor:Cursor? = contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, null)
 
-        while(songCursor!=null && songCursor.moveToNext()) {
-            var titleSong = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
-            var artisteSong = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
-            var duration = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.DURATION))
-            songModelData.add(Song("Y", titleSong, artisteSong, duration))
-        }
-        songListAdapter = SongListAdapter(songModelData)
-        recyclerView.layoutManager = LinearLayoutManager(applicationContext)
-        recyclerView.adapter = songListAdapter
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
