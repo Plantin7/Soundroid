@@ -14,7 +14,7 @@ import fr.uge.soundroid.models.Song
  * @author Vincent Agullo
  */
 
-class SongListAdapter(private val songs:List<Song>) : RecyclerView.Adapter<SongListAdapter.ViewHolder>() {
+class SongListAdapter(private val songs:ArrayList<Song>) : RecyclerView.Adapter<SongListAdapter.ViewHolder>() {
 
     private lateinit var mClickListener: ItemClickListener
 
@@ -59,6 +59,11 @@ class SongListAdapter(private val songs:List<Song>) : RecyclerView.Adapter<SongL
     /** get the number of cards */
     override fun getItemCount(): Int {
         return songs.size
+    }
+
+    /** allows clicks events to be caught */
+    fun setClickListener(itemClickListener: ItemClickListener) {
+        mClickListener = itemClickListener
     }
 
     /** parent activity will implement this method to respond to click events */

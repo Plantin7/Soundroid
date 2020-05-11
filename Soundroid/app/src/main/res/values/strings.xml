@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Soundroid</string>
+    <string name="title_main_activity">Soundroid</string>
+    <string name="Songs">Songs</string>
+    <string name="Albums">Albums</string>
+    <string name="Artistes">Artistes</string>
 </resources>
