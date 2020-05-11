@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import fr.uge.soundroid.R
 import fr.uge.soundroid.fragments.SongListFragment
+import fr.uge.soundroid.models.Song
 
 
 private val TAB_TITLES = arrayOf(

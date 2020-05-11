@@ -14,7 +14,7 @@ import fr.uge.soundroid.models.Song
  * @author Vincent Agullo
  */
 
-class SongListAdapter(private val songs:List<Song>) : RecyclerView.Adapter<SongListAdapter.ViewHolder>() {
+class SongListAdapter(private val songs:ArrayList<Song>) : RecyclerView.Adapter<SongListAdapter.ViewHolder>() {
 
     private lateinit var mClickListener: ItemClickListener
 
