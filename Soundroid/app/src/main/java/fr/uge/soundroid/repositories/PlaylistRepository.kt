@@ -79,4 +79,13 @@ object PlaylistRepository {
             conditions
         ).toList()
     }
+
+    /**
+     * This function return all the playlists of the database.
+     *
+     * @return The founded Playlists list.
+     */
+    fun findAll(): List<Playlist> {
+        return findPlaylists(HashMap()).toList()
+    }
 }

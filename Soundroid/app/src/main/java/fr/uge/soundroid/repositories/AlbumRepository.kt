@@ -79,4 +79,13 @@ object AlbumRepository {
             conditions
         ).toList()
     }
+
+    /**
+     * This function return all the albums of the database.
+     *
+     * @return The founded Album list.
+     */
+    fun findAll(): List<Album> {
+        return findAlbums(HashMap()).toList()
+    }
 }

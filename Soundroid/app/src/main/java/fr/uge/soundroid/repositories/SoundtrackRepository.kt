@@ -18,7 +18,7 @@ object SoundtrackRepository {
     }
 
     /**
-     * THis function save the given soundtracks in the database.
+     * This function save the given soundtracks in the database.
      */
     fun saveSoundtrackList(elements: List<Soundtrack>) {
         realm.beginTransaction()
@@ -80,5 +80,14 @@ object SoundtrackRepository {
         return findSoundtracks(
             conditions
         ).toList()
+    }
+
+    /**
+     * This function return all the soundtracks of the database.
+     *
+     * @return The founded Soundtrack list.
+     */
+    fun findAll(): List<Soundtrack> {
+        return findSoundtracks(HashMap()).toList()
     }
 }

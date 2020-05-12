@@ -79,4 +79,13 @@ object ArtistRepository {
             conditions
         ).toList()
     }
+
+    /**
+     * This function return all the soundtracks of the database.
+     *
+     * @return The founded Soundtrack list.
+     */
+    fun findAll(): List<Artist> {
+        return findArtists(HashMap()).toList()
+    }
 }
