@@ -6,7 +6,7 @@ import io.realm.annotations.Required
 
 open class Artist(
     @PrimaryKey
-    var id: Int? = null,
+    var id: Long = 0,
 
     @Required
     var name: String? = null): RealmObject() {

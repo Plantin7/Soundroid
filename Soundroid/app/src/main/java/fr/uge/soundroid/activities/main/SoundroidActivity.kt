@@ -6,16 +6,14 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import fr.uge.soundroid.R
-import fr.uge.soundroid.adapters.SongListAdapter
-import fr.uge.soundroid.adapters.SongListAdapter.ItemClickListener
-import fr.uge.soundroid.fragments.SongListFragment
-import fr.uge.soundroid.models.Song
+import fr.uge.soundroid.models.Artist
+import fr.uge.soundroid.models.Soundtrack
+import fr.uge.soundroid.repositories.SoundtrackRepository
 import fr.uge.soundroid.utils.RequiringPermissionActivity
 
 
@@ -23,7 +21,6 @@ import fr.uge.soundroid.utils.RequiringPermissionActivity
  * Main activity
  * @author Vincent_Agullo
  */
-// @ActivityMetadata(permissions={ Manifest.permission.SEND_SMS})
 class SoundroidActivity : RequiringPermissionActivity(){
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -42,25 +39,31 @@ class SoundroidActivity : RequiringPermissionActivity(){
             "This activity requires to access external storage, please grant the permission",
             Runnable { Toast.makeText(this, "Cannot accessed external storage we do not have the permission", Toast.LENGTH_LONG).show()} ,
             Runnable {
-
-                //val songModelData = getSongs()
-                //val ft = supportFragmentManager.beginTransaction()
-                //ft.replace(R.id.songs_container, SongListFragment.create(songModelData))
-                //ft.commit()
+                val songModelData = getSongs()
+                SoundtrackRepository.saveSoundtrackList(songModelData)
             })
     }
 
     // should we put this method elsewhere
-    private fun getSongs(): ArrayList<Song> {
+    private fun getSongs(): ArrayList<Soundtrack> {
         val songCursor: Cursor? = contentResolver?.query( MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,null,null,null,null )
-        val songModelData: ArrayList<Song> = ArrayList()
+        val songModelData: ArrayList<Soundtrack> = ArrayList()
+        //var changeId = 1 //TODO
         while (songCursor != null && songCursor.moveToNext()) {
             val titleSong = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
             val artisteSong = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
             val duration = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.DURATION))
-            val path = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.DATA)) // TODO
-            songModelData.add(Song("Y", titleSong, artisteSong, duration, path))
+            val pathSong = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.DATA)) // TODO
+
+            songModelData.add(Soundtrack().apply {
+                title = titleSong
+                artist = Artist().apply { name = artisteSong }
+                seconds = duration.toInt()
+                path = pathSong
+                //album = Album().apply { name= }
+            })
         }
+        Log.d("Testy", "Activity :" + songModelData.size)
         return songModelData
     }
 }
@@ -69,3 +72,7 @@ class SoundroidActivity : RequiringPermissionActivity(){
 //val id = songCursor.getColumnIndex(MediaStore.Audio.Media._ID)
 //var path = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, songCursor.getLong(id))
 //var mediaSource = ProgressiveMediaSource()
+
+//val ft = supportFragmentManager.beginTransaction()
+//ft.replace(R.id.songs_container, SongListFragment.create(songModelData))
+//ft.commit()

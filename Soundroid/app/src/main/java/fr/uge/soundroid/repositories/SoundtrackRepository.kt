@@ -5,6 +5,7 @@ import fr.uge.soundroid.models.Soundtrack
 import io.realm.Realm
 import io.realm.RealmResults
 
+
 object SoundtrackRepository {
 
     /* TODO : close instance after service utilisation */
@@ -50,6 +51,7 @@ object SoundtrackRepository {
         conditions.forEach {
             query.equalTo(it.key, it.value)
         }
+        Log.d("Testy", query.findAll().toString())
 
         return query.findAll()
     }

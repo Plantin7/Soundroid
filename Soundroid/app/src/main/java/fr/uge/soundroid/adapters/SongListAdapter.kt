@@ -8,13 +8,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.soundroid.R
 import fr.uge.soundroid.models.Song
+import fr.uge.soundroid.models.Soundtrack
 
 /**
  * This class implement an RecyclerView to display song list and to know which song the user pressed
  * @author Vincent Agullo
  */
 
-class SongListAdapter(private val songs:ArrayList<Song>) : RecyclerView.Adapter<SongListAdapter.ViewHolder>() {
+class SongListAdapter(private val songs:ArrayList<Soundtrack>) : RecyclerView.Adapter<SongListAdapter.ViewHolder>() {
 
     private lateinit var mClickListener: ItemClickListener
 
@@ -29,10 +30,10 @@ class SongListAdapter(private val songs:ArrayList<Song>) : RecyclerView.Adapter<
         }
 
         /** Update the state of the song */
-        fun update(song: Song) {
+        fun update(song: Soundtrack) {
             //albumPicture.setImageBitmap(song.getBitmap(albumPicture.context)) TODO
             titleSong.text = song.title
-            artisteSong.text = song.artiste
+            artisteSong.text = song.artist?.name ?: "<Un>"
         }
 
         /** A song has been clicked */
@@ -42,7 +43,7 @@ class SongListAdapter(private val songs:ArrayList<Song>) : RecyclerView.Adapter<
     }
 
     /** */
-    private fun getMusic(position:Int): Song {
+    private fun getMusic(position:Int): Soundtrack {
         return songs[position]
     }
 
@@ -68,6 +69,6 @@ class SongListAdapter(private val songs:ArrayList<Song>) : RecyclerView.Adapter<
 
     /** parent activity will implement this method to respond to click events */
     interface ItemClickListener {
-        fun onItemClick(view: View, song:Song)
+        fun onItemClick(view: View, song:Soundtrack)
     }
 }

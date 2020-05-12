@@ -20,6 +20,8 @@ import fr.uge.soundroid.R
 import fr.uge.soundroid.adapters.SongListAdapter
 import fr.uge.soundroid.adapters.SongListAdapter.ItemClickListener
 import fr.uge.soundroid.models.Song
+import fr.uge.soundroid.models.Soundtrack
+import fr.uge.soundroid.repositories.SoundtrackRepository
 import fr.uge.soundroid.services.MusicPlayerService
 
 
@@ -29,22 +31,9 @@ class SongListFragment : Fragment(), ItemClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_song_list, container, false)
-        val songs = arguments?.getParcelableArrayList<Song>("song_model_data")
-
-        val songCursor: Cursor? = activity?.contentResolver?.query( MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,null,null,null,null )
-        val songModelData: ArrayList<Song> = ArrayList()
-        while (songCursor != null && songCursor.moveToNext()) {
-            val titleSong = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
-            val artisteSong = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
-            val duration = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.DURATION))
-            val path = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.DATA)) // TODO
-            songModelData.add(Song("Y", titleSong, artisteSong, duration, path))
-        }
-        /*if (songs != null) {
-            Log.d("Testy", "HEY")
-            songModelData = songs
-
-        }*/
+        //val songs = arguments?.getParcelableArrayList<Song>("song_model_data")
+        val songModelData = ArrayList(SoundtrackRepository.findSoundtracksList(HashMap()))
+        Log.d("Testy", songModelData.size.toString())
         val recyclerView = rootView.findViewById(R.id.recyclerView) as RecyclerView
         recyclerView.setHasFixedSize(true)
         val songListAdapter = SongListAdapter(songModelData)
@@ -55,20 +44,10 @@ class SongListFragment : Fragment(), ItemClickListener {
         return rootView
     }
 
-    companion object {
-        fun create(songs: ArrayList<Song>): SongListFragment {
-            val feedFragment = SongListFragment()
-            val b = Bundle()
-            b.putParcelableArrayList("song_model_data", songs)
-            feedFragment.arguments = b
-            return feedFragment
-        }
-    }
-
-    override fun onItemClick(view: View, song: Song) {
-        Toast.makeText(context, song.songPath, Toast.LENGTH_SHORT).show()
+    override fun onItemClick(view: View, song: Soundtrack) {
+        Toast.makeText(context, song.path, Toast.LENGTH_SHORT).show()
         val intent = Intent(context, MusicPlayerService::class.java)
-        intent.putExtra("song", song.songPath)
+        intent.putExtra("song", song.path)
         context?.startService(intent)
     }
 }
