@@ -4,6 +4,7 @@ import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.Required
+import java.lang.AssertionError
 
 open class Playlist(
     @PrimaryKey
@@ -33,5 +34,31 @@ open class Playlist(
 
     fun hasSoundtracks(): Boolean {
         return soundtracks.size > 0
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Playlist
+
+        if (id != other.id) return false
+        if (title != other.title) return false
+        if (soundtracks != other.soundtracks) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return title.hashCode()
+    }
+
+    fun initPrimaryKey(): Int {
+        id = hashCode()
+        if ( id != null ) {
+            return id!!
+        } else {
+            throw AssertionError()
+        }
     }
 }

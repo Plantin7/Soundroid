@@ -3,6 +3,8 @@ package fr.uge.soundroid.models
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.Required
+import java.lang.AssertionError
+import java.lang.IllegalStateException
 
 
 open class Soundtrack(
@@ -39,7 +41,15 @@ open class Soundtrack(
     }
 
     override fun hashCode(): Int {
-        /* TODO : create a standard hash */
-        return 0
+        return "$title $path $seconds ${artist?.name} ${album?.name}".hashCode()
+    }
+
+    fun initPrimaryKey(): Int {
+        id = hashCode()
+        if ( id != null ) {
+            return id!!
+        } else {
+            throw AssertionError()
+        }
     }
 }
