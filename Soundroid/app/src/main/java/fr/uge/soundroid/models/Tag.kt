@@ -27,4 +27,13 @@ open class Tag(
         return name.hashCode()
     }
 
+    fun initPrimaryKey(): Int {
+        id = hashCode()
+        if ( id != null ) {
+            return id!!
+        } else {
+            throw AssertionError()
+        }
+    }
+
 }
