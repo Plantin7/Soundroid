@@ -55,6 +55,22 @@ object AlbumRepository {
     }
 
     /**
+     * This function execute the realm request with the given conditions.
+     * It returns the RealmResults (A list that contains all the founded elements)
+     *
+     * @return RealmResults<Album> the query result.
+     */
+    private fun findAlbumsLike(conditions: Map<String, String>): RealmResults<Album> {
+        val query = realm.where<Album>(Album::class.java)
+
+        conditions.forEach {
+            query.like(it.key, "*${it.value}*")
+        }
+
+        return query.findAll()
+    }
+
+    /**
      * This function return the Album founded with the given conditions.
      * If more or less than one Album was founded the function return null.
      *
@@ -87,5 +103,67 @@ object AlbumRepository {
      */
     fun findAll(): List<Album> {
         return findAlbums(HashMap()).toList()
+    }
+
+    /**
+     * This function return the albums filtered by the given parameters.
+     *
+     * @return The founded Album list.
+     */
+    fun findLike(filters: Map<String, String>): List<Album> {
+        return findAlbumsLike(
+            filters
+        ).toList()
+    }
+
+    /**
+     * This function delete all the albums founded with the given conditions.
+     */
+    fun deleteAlbumsByConditions(conditions: Map<String, String>) {
+        realm.executeTransaction {
+            findAlbums(conditions).deleteAllFromRealm()
+        }
+    }
+
+    /**
+     * This function delete a single album with the given conditions.
+     *
+     * @return Return true if the album was founded and deleted, false either.
+     */
+    fun deleteSingleAlbumByConditions(conditions: Map<String, String>): Boolean {
+        val result = findSingleAlbum(conditions) ?: return false
+
+        realm.executeTransaction {
+            result.deleteFromRealm()
+        }
+
+        return true
+    }
+
+    /**
+     * This function delete all the albums of the database.
+     */
+    fun deleteAllAlbums() {
+        realm.executeTransaction {
+            findAlbums(HashMap()).deleteAllFromRealm()
+        }
+    }
+
+    /**
+     * This function delete the given list of albums.
+     */
+    fun deleteAlbumsList(albums: List<Album>) {
+        realm.executeTransaction {
+            for ( album in albums ) {
+                album.deleteFromRealm()
+            }
+        }
+    }
+
+    /**
+     * This function delete the given album.
+     */
+    fun deleteAlbum(album: Album) {
+        deleteAlbumsList(listOf(album))
     }
 }

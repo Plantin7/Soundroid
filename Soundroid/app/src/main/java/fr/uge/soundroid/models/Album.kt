@@ -15,7 +15,7 @@ open class Album (
 
     var albumPicture: String? = null,
 
-    var artist: Artist? = null ) : RealmObject() {
+    var artist: Artist? = null ) : RealmObject(), SoundroidSearchable {
 
     var soundtracks = RealmList<Soundtrack>()
 
@@ -42,6 +42,14 @@ open class Album (
 
     fun hasSoundtracks(): Boolean {
         return soundtracks.size > 0
+    }
+
+    override fun getNameForSearch(): String {
+        return if ( name != null ) {
+            name!!
+        } else {
+            "Unknown Album name"
+        }
     }
 
     override fun equals(other: Any?): Boolean {

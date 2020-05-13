@@ -1,6 +1,7 @@
 package fr.uge.soundroid
 
 import android.app.Application
+import fr.uge.soundroid.utils.DatabaseService
 import io.realm.Realm
 import io.realm.RealmConfiguration
 
@@ -14,9 +15,11 @@ class Soundroid : Application() {
         val configuration = RealmConfiguration.Builder()
             .name("soundroid.db")
             .deleteRealmIfMigrationNeeded()
-            .schemaVersion(0)
+            .schemaVersion(1)
             .build()
         Realm.setDefaultConfiguration(configuration)
+
+        DatabaseService.printDatabase()
     }
 
 }

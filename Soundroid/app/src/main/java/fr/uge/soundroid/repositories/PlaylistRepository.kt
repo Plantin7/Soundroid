@@ -55,6 +55,22 @@ object PlaylistRepository {
     }
 
     /**
+     * This function execute the realm request with the given conditions.
+     * It returns the RealmResults (A list that contains all the founded elements)
+     *
+     * @return RealmResults<Playlist> the query result.
+     */
+    private fun findPlaylistsLike(conditions: Map<String, String>): RealmResults<Playlist> {
+        val query = realm.where<Playlist>(Playlist::class.java)
+
+        conditions.forEach {
+            query.like(it.key, "*${it.value}*")
+        }
+
+        return query.findAll()
+    }
+
+    /**
      * This function return the Playlist founded with the given conditions.
      * If more or less than one Playlist was founded the function return null.
      *
@@ -87,5 +103,67 @@ object PlaylistRepository {
      */
     fun findAll(): List<Playlist> {
         return findPlaylists(HashMap()).toList()
+    }
+
+    /**
+     * This function return the albums filtered by the given parameters.
+     *
+     * @return The founded Playlist list.
+     */
+    fun findLike(filters: Map<String, String>): List<Playlist> {
+        return findPlaylistsLike(
+            filters
+        ).toList()
+    }
+
+    /**
+     * This function delete all the playlists founded with the given conditions.
+     */
+    fun deletePlaylistsByConditions(conditions: Map<String, String>) {
+        realm.executeTransaction {
+            findPlaylists(conditions).deleteAllFromRealm()
+        }
+    }
+
+    /**
+     * This function return a single playlist with the given conditions.
+     *
+     * @return Return true if the playlist was founded and deleted, false either.
+     */
+    fun deleteSinglePlaylistByConditions(conditions: Map<String, String>): Boolean {
+        val result = findSinglePlaylist(conditions) ?: return false
+
+        realm.executeTransaction {
+            result.deleteFromRealm()
+        }
+
+        return true
+    }
+
+    /**
+     * This function delete all the playlists of the database.
+     */
+    fun deleteAllPlaylists() {
+        realm.executeTransaction {
+            findPlaylists(HashMap()).deleteAllFromRealm()
+        }
+    }
+
+    /**
+     * This function delete the given list of playlists.
+     */
+    fun deletePlaylistsList(playlists: List<Playlist>) {
+        realm.executeTransaction {
+            for ( playlist in playlists ) {
+                playlist.deleteFromRealm()
+            }
+        }
+    }
+
+    /**
+     * This function delete the given playlist.
+     */
+    fun deletePlaylist(playlist: Playlist) {
+        deletePlaylistsList(listOf(playlist))
     }
 }
