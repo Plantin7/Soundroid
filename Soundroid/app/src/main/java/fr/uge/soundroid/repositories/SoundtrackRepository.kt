@@ -22,6 +22,7 @@ object SoundtrackRepository {
      */
     fun saveSoundtrackList(elements: List<Soundtrack>) {
         realm.beginTransaction()
+        realm.deleteAll() // TODO En parler avec guillaume !!!!
         for ( element in elements ) {
             realm.copyToRealmOrUpdate(element)
         }
@@ -51,7 +52,6 @@ object SoundtrackRepository {
         conditions.forEach {
             query.equalTo(it.key, it.value)
         }
-        Log.d("Testy", query.findAll().toString())
 
         return query.findAll()
     }

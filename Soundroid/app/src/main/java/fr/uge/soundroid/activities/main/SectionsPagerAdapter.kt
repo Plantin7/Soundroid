@@ -1,6 +1,7 @@
 package fr.uge.soundroid.activities.main
 
 import android.content.Context
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -18,26 +19,27 @@ private val TAB_TITLES = arrayOf(
 /**
  * @author Vincent_Agullo
  */
-class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) : FragmentPagerAdapter(fm) {
+class SectionsPagerAdapter(private val context: Context, private val fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
         return when(position) {
             // Songs
             0 -> {
+
                 SongListFragment()
             }
             // Albums
             1 -> {
-                // TODO
+
                 SongListFragment()
             }
 
             //Artists
-            2 -> {
-                // TODO
+            2 ->{
+
                 SongListFragment()
             }
-            else -> SongListFragment();
+            else -> SongListFragment()
         }
     }
 

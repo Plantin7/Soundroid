@@ -19,7 +19,7 @@ open class Soundtrack(
     var path: String? = null,
 
     @Required
-    var seconds: Int? = null,
+    var duration: Int? = null,
 
     var artist: Artist? = null,
 
@@ -34,7 +34,7 @@ open class Soundtrack(
         if (id != other.id) return false
         if (title != other.title) return false
         if (path != other.path) return false
-        if (seconds != other.seconds) return false
+        if (duration != other.duration) return false
         if (artist != other.artist) return false
         if (album != other.album) return false
 
@@ -42,7 +42,7 @@ open class Soundtrack(
     }
 
     override fun hashCode(): Int {
-        return "$title $path $seconds ${artist?.name} ${album?.name}".hashCode()
+        return "$title $path $duration ${artist?.name} ${album?.name}".hashCode()
     }
 
     fun initPrimaryKey(): Int {

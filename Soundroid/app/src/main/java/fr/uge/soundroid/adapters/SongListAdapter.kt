@@ -1,28 +1,39 @@
 package fr.uge.soundroid.adapters
 
+import android.graphics.*
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import android.util.Base64
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.soundroid.R
-import fr.uge.soundroid.models.Song
 import fr.uge.soundroid.models.Soundtrack
+import java.io.ByteArrayOutputStream
+import java.io.FileNotFoundException
+
 
 /**
  * This class implement an RecyclerView to display song list and to know which song the user pressed
  * @author Vincent Agullo
  */
 
-class SongListAdapter(private val songs:ArrayList<Soundtrack>) : RecyclerView.Adapter<SongListAdapter.ViewHolder>() {
+class SongListAdapter(private val songs: ArrayList<Soundtrack>) :
+    RecyclerView.Adapter<SongListAdapter.ViewHolder>() {
 
     private lateinit var mClickListener: ItemClickListener
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        private val albumPicture:ImageView = itemView.findViewById(R.id.album_picture)
-        private val titleSong:TextView = itemView.findViewById(R.id.title_song)
-        private val artisteSong:TextView = itemView.findViewById(R.id.artiste_song)
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        View.OnClickListener {
+        private val albumPicture: ImageView = itemView.findViewById(R.id.album_picture)
+        private val titleSong: TextView = itemView.findViewById(R.id.title_song)
+        private val artisteSong: TextView = itemView.findViewById(R.id.artiste_song)
 
         /** Init the clickListener*/
         init {
@@ -31,9 +42,9 @@ class SongListAdapter(private val songs:ArrayList<Soundtrack>) : RecyclerView.Ad
 
         /** Update the state of the song */
         fun update(song: Soundtrack) {
-            //albumPicture.setImageBitmap(song.getBitmap(albumPicture.context)) TODO
+            albumPicture.setImageBitmap(song.album?.getBitmap(itemView.context))
             titleSong.text = song.title
-            artisteSong.text = song.artist?.name ?: "<Un>"
+            artisteSong.text = song.artist?.name
         }
 
         /** A song has been clicked */
@@ -43,16 +54,22 @@ class SongListAdapter(private val songs:ArrayList<Soundtrack>) : RecyclerView.Ad
     }
 
     /** */
-    private fun getMusic(position:Int): Soundtrack {
+    private fun getMusic(position: Int): Soundtrack {
         return songs[position]
     }
 
     /** Create a viewHolder*/
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.item_song, viewGroup,false))
+        return ViewHolder(
+            LayoutInflater.from(viewGroup.context).inflate(
+                R.layout.item_song,
+                viewGroup,
+                false
+            )
+        )
     }
 
-    /** Binding card with the viewHolder */
+    /** Binding soundtrack with the viewHolder */
     override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) {
         viewHolder.update(songs[i])
     }
@@ -69,6 +86,29 @@ class SongListAdapter(private val songs:ArrayList<Soundtrack>) : RecyclerView.Ad
 
     /** parent activity will implement this method to respond to click events */
     interface ItemClickListener {
-        fun onItemClick(view: View, song:Soundtrack)
+        fun onItemClick(view: View, song: Soundtrack)
     }
+
+    /**-------------- Unused ------------------------------------------*/
+    /**
+     * @param encodedString
+     * @return bitmap (from given string)
+     */
+    fun stringToBitMap(encodedString: String?): Bitmap? {
+        return try {
+            val encodeByte: ByteArray = Base64.decode(encodedString, Base64.DEFAULT)
+            BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size)
+        } catch (e: Exception) {
+            e.message
+            null
+        }
+    }
+
+    fun bitMapToString(bitmap: Bitmap): String {
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
+        val b: ByteArray = baos.toByteArray()
+        return Base64.encodeToString(b, Base64.DEFAULT)
+    }
+
 }

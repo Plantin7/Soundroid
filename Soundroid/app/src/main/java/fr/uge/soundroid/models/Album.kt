@@ -1,10 +1,19 @@
 package fr.uge.soundroid.models
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.provider.MediaStore
+import android.util.Log
+import fr.uge.soundroid.R
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.Required
-import java.lang.AssertionError
+import java.io.FileNotFoundException
+import java.io.IOException
+import java.io.InputStream
 
 open class Album (
     @PrimaryKey
@@ -70,5 +79,25 @@ open class Album (
         } else {
             throw AssertionError()
         }
+    }
+
+    companion object {
+        val map:MutableMap<Int?, Bitmap> = HashMap()
+        // cache lru
+    }
+
+    /** Bitmap representation of the picture for the album  */
+    @Transient
+    private var cachedBitmap: Bitmap? = null
+
+    fun getBitmap(context: Context): Bitmap? {
+        if (map[id] == null) {
+            map[id] = try {
+                MediaStore.Images.Media.getBitmap(context.contentResolver, Uri.parse(albumPicture))
+            } catch (e: FileNotFoundException) {
+                BitmapFactory.decodeResource(context.resources, R.mipmap.kissclipart)
+            }
+        }
+        return map[id]
     }
 }
