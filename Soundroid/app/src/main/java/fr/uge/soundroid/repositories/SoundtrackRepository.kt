@@ -5,6 +5,7 @@ import fr.uge.soundroid.models.Soundtrack
 import io.realm.Realm
 import io.realm.RealmResults
 
+
 object SoundtrackRepository {
 
     /* TODO : close instance after service utilisation */
@@ -21,6 +22,7 @@ object SoundtrackRepository {
      */
     fun saveSoundtrackList(elements: List<Soundtrack>) {
         realm.beginTransaction()
+        realm.deleteAll() // TODO En parler avec guillaume !!!!
         for ( element in elements ) {
             realm.copyToRealmOrUpdate(element)
         }

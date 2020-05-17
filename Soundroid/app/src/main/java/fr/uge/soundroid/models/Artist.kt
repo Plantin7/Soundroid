@@ -7,7 +7,7 @@ import java.lang.AssertionError
 
 open class Artist(
     @PrimaryKey
-    var id: Int? = null,
+    var id: Int? = 0,
 
     @Required
     var name: String? = null): RealmObject(), SoundroidSearchable {

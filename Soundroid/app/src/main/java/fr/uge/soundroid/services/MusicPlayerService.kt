@@ -3,6 +3,7 @@ package fr.uge.soundroid.services
 import android.app.Service
 import android.content.Intent
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.IBinder
 import android.widget.Toast
 import fr.uge.soundroid.models.Song
@@ -27,7 +28,7 @@ class MusicPlayerService : Service() {
     }
 
     private fun playSong() {
-        mediaPlayer!!.setDataSource(songPath)
+        mediaPlayer!!.setDataSource(applicationContext, Uri.parse(songPath))
         mediaPlayer!!.prepare()
         mediaPlayer!!.start()
     }

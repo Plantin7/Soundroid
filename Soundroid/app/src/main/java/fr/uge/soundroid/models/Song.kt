@@ -2,7 +2,6 @@ package fr.uge.soundroid.models
 
 import android.os.Parcel
 import android.os.Parcelable
-import java.io.Serializable
 
 // TODO Change type of the duration variable
 data class Song(val albumPicture: String?, val title:String?, val artiste:String?, val duration:String?, val songPath:String?) : Parcelable {
