@@ -166,4 +166,10 @@ object AlbumRepository {
     fun deleteAlbum(album: Album) {
         deleteAlbumsList(listOf(album))
     }
+
+    fun findAlbumById(id: Int): Album? {
+        val query = realm.where<Album>(Album::class.java)
+        query.equalTo("id", id)
+        return query.findFirst()
+    }
 }

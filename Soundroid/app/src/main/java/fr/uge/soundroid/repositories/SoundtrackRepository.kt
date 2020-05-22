@@ -170,4 +170,10 @@ object SoundtrackRepository {
     fun deleteSoundtrack(soundtrack: Soundtrack) {
         deleteSoundtracksList(listOf(soundtrack))
     }
+
+    fun findSoundtrackById(id: Int): Soundtrack? {
+        val query = realm.where<Soundtrack>(Soundtrack::class.java)
+        query.equalTo("id", id)
+        return query.findFirst()
+    }
 }

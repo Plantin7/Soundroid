@@ -166,4 +166,10 @@ object ArtistRepository {
     fun deleteArtist(artist: Artist) {
         deleteArtistsList(listOf(artist))
     }
+
+    fun findArtistById(id: Int): Artist? {
+        val query = realm.where<Artist>(Artist::class.java)
+        query.equalTo("id", id)
+        return query.findFirst()
+    }
 }

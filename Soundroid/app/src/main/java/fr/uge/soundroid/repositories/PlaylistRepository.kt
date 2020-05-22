@@ -166,4 +166,10 @@ object PlaylistRepository {
     fun deletePlaylist(playlist: Playlist) {
         deletePlaylistsList(listOf(playlist))
     }
+
+    fun findPlaylistById(id: Int): Playlist? {
+        val query = realm.where<Playlist>(Playlist::class.java)
+        query.equalTo("id", id)
+        return query.findFirst()
+    }
 }

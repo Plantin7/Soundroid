@@ -168,4 +168,10 @@ object TagRepository {
     fun deleteTag(tag: Tag) {
         deleteTagsList(listOf(tag))
     }
+
+    fun findTagById(id: Int): Tag? {
+        val query = realm.where<Tag>(Tag::class.java)
+        query.equalTo("id", id)
+        return query.findFirst()
+    }
 }
