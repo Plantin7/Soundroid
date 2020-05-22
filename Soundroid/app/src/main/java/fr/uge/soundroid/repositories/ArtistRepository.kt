@@ -55,6 +55,22 @@ object ArtistRepository {
     }
 
     /**
+     * This function execute the realm request with the given conditions.
+     * It returns the RealmResults (A list that contains all the founded elements)
+     *
+     * @return RealmResults<Artist> the query result.
+     */
+    private fun findArtistsLike(conditions: Map<String, String>): RealmResults<Artist> {
+        val query = realm.where<Artist>(Artist::class.java)
+
+        conditions.forEach {
+            query.like(it.key, "*${it.value}*")
+        }
+
+        return query.findAll()
+    }
+
+    /**
      * This function return the Artist founded with the given conditions.
      * If more or less than one Artist was founded the function return null.
      *
@@ -87,5 +103,73 @@ object ArtistRepository {
      */
     fun findAll(): List<Artist> {
         return findArtists(HashMap()).toList()
+    }
+
+    /**
+     * This function return the artists filtered by the given parameters.
+     *
+     * @return The founded Artist list.
+     */
+    fun findLike(filters: Map<String, String>): List<Artist> {
+        return findArtistsLike(
+            filters
+        ).toList()
+    }
+
+    /**
+     * This function delete all the artists founded with the given conditions.
+     */
+    fun deleteArtistsByConditions(conditions: Map<String, String>) {
+        realm.executeTransaction {
+            findArtists(conditions).deleteAllFromRealm()
+        }
+    }
+
+    /**
+     * This function delete a single artist with the given conditions.
+     *
+     * @return Return true if the artist was founded and deleted, false either.
+     */
+    fun deleteSingleArtistByConditions(conditions: Map<String, String>): Boolean {
+        val result = findSingleArtist(conditions) ?: return false
+
+        realm.executeTransaction {
+            result.deleteFromRealm()
+        }
+
+        return true
+    }
+
+    /**
+     * This function delete all the artists of the database.
+     */
+    fun deleteAllArtists() {
+        realm.executeTransaction {
+            findArtists(HashMap()).deleteAllFromRealm()
+        }
+    }
+
+    /**
+     * This function delete the given list of artists.
+     */
+    fun deleteArtistsList(artists: List<Artist>) {
+        realm.executeTransaction {
+            for ( artist in artists ) {
+                artist.deleteFromRealm()
+            }
+        }
+    }
+
+    /**
+     * This function delete the given playlist.
+     */
+    fun deleteArtist(artist: Artist) {
+        deleteArtistsList(listOf(artist))
+    }
+
+    fun findArtistById(id: Int): Artist? {
+        val query = realm.where<Artist>(Artist::class.java)
+        query.equalTo("id", id)
+        return query.findFirst()
     }
 }
