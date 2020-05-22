@@ -54,7 +54,7 @@
                 android:layout_marginTop="4dp"
                 android:padding="4dp"
                 android:text="Artiste"
-                android:textColor="#8A8888"
+                android:textColor="@color/colorGrey"
                 android:textSize="10dp" />
 
         </LinearLayout>
