@@ -14,7 +14,7 @@ class Soundroid : Application() {
         val configuration = RealmConfiguration.Builder()
             .name("soundroid.db")
             .deleteRealmIfMigrationNeeded()
-            .schemaVersion(0)
+            .schemaVersion(1)
             .build()
         Realm.setDefaultConfiguration(configuration)
     }

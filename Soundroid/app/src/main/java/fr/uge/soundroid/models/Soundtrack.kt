@@ -3,6 +3,7 @@ package fr.uge.soundroid.models
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.Required
+import java.io.Serializable
 import java.lang.AssertionError
 import java.lang.IllegalStateException
 

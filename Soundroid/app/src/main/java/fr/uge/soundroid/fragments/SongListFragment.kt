@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.soundroid.R
+import fr.uge.soundroid.activities.others.PlayerActivity
 import fr.uge.soundroid.adapters.SongListAdapter
 import fr.uge.soundroid.adapters.SongListAdapter.ItemClickListener
 import fr.uge.soundroid.models.Soundtrack
@@ -59,8 +60,11 @@ class SongListFragment : Fragment(), ItemClickListener {
 
     override fun onItemClick(view: View, song: Soundtrack) {
         Toast.makeText(context, song.path, Toast.LENGTH_SHORT).show()
-        val intent = Intent(context, MusicPlayerService::class.java)
-        intent.putExtra("song", song.path)
-        context?.startService(intent)
+        val intent = Intent(context, PlayerActivity::class.java)
+        intent.putExtra("soundtrack", song.title)
+        startActivity(intent)
+        //val intent = Intent(context, MusicPlayerService::class.java)
+        //intent.putExtra("song", song.path)
+        //context?.startService(intent)
     }
 }

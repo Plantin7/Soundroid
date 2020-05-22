@@ -9,6 +9,7 @@ import android.util.Log
 import fr.uge.soundroid.R
 import io.realm.RealmList
 import io.realm.RealmObject
+import io.realm.annotations.Ignore
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.Required
 import java.io.FileNotFoundException
@@ -82,13 +83,10 @@ open class Album (
     }
 
     companion object {
+        @Ignore
         val map:MutableMap<Int?, Bitmap> = HashMap()
         // cache lru
     }
-
-    /** Bitmap representation of the picture for the album  */
-    @Transient
-    private var cachedBitmap: Bitmap? = null
 
     fun getBitmap(context: Context): Bitmap? {
         if (map[id] == null) {
