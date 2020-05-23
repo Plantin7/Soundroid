@@ -27,6 +27,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var soundtrackList:List<Soundtrack>
     private var currentPosition:Int = -1
     private lateinit var musicPlayerService: MusicPlayerService
+    private var counter = 0 // /!\ this counter is for changing music when the seek bar is finished
     var mBound = false
 
     /** Defines callbacks for service binding, passed to bindService()  */
@@ -98,12 +99,15 @@ class PlayerActivity : AppCompatActivity() {
         player_seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if(progress == seekBar?.max){
-                    Log.d("Testy", "Ah ouais daccow")
                     stopRefresh()
                     player_next_button.performClick() // Change music
+                    counter = 0
+                    return
+                }
+                if(progress== seekBar?.max?.minus(1)){
+                    counter += 1
                 }
                 if(mBound && fromUser) {
-                    //player_seekBar.progress = currentPosition
                     musicPlayerService.seekTo(progress * 1000)
                 }
             }
@@ -164,8 +168,14 @@ class PlayerActivity : AppCompatActivity() {
     private val updateSeekBarRunnable = Runnable {
         handler.postDelayed(getUpdateSeekBarRunnable(), 1000)
         val currentPosition = musicPlayerService.getCurrentPosition()
-        if(mBound) {
-            updateSeekBar(currentPosition)
+        if(mBound) { updateSeekBar(currentPosition) }
+        if((currentPosition / 1000) == player_seekBar?.max?.minus(1)){
+            counter += 1
+            if(counter == 3) {
+                stopRefresh()
+                player_next_button.performClick() // Change music
+                counter = 0
+            }
         }
     }
 
