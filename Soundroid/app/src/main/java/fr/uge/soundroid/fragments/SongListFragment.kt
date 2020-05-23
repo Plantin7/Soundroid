@@ -2,6 +2,7 @@ package fr.uge.soundroid.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +29,7 @@ class SongListFragment : Fragment(), ItemClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_song_list, container, false)
-        soundtrackModelData = ArrayList(SoundtrackRepository.findSoundtracksList(HashMap()))
+        soundtrackModelData = ArrayList(SoundtrackRepository.findAll())
         recyclerView = rootView.findViewById(R.id.recyclerView) as RecyclerView
         recyclerView.setHasFixedSize(true)
         songListAdapter = SongListAdapter(soundtrackModelData)
@@ -47,8 +48,10 @@ class SongListFragment : Fragment(), ItemClickListener {
         // TODO
         realm = Realm.getDefaultInstance()
         realmListener = RealmChangeListener {
-            val ne = ArrayList(SoundtrackRepository.findSoundtracksList(HashMap()))
-            songListAdapter = SongListAdapter(ne)
+            Log.d("Testy", "UPDATED")
+            val newList = ArrayList(SoundtrackRepository.findAll())
+            Log.d("Testy", newList.toString())
+            songListAdapter = SongListAdapter(newList)
             recyclerView.adapter = songListAdapter
             songListAdapter.setClickListener(this)
         }
@@ -59,8 +62,12 @@ class SongListFragment : Fragment(), ItemClickListener {
 
     override fun onItemClick(view: View, song: Soundtrack) {
         val intent = Intent(context, PlayerActivity::class.java)
+        Log.d("Testy", song.toString())
         val position = soundtrackModelData.indexOf(song)
         intent.putExtra("soundtrackId", song.id).putExtra("position", position)
         startActivity(intent)
+        if(song.note == null){
+            Log.d("Testy", "Aucune note")
+        }
     }
 }

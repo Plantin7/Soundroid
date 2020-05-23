@@ -116,6 +116,14 @@ class PlayerActivity : AppCompatActivity() {
                 musicPlayerService.seekTo(seekBar.progress * 1000)
             }
         })
+
+        player_rating_bar.setOnRatingBarChangeListener { ratingBar, rating, _ ->
+            SoundtrackRepository.realm.executeTransaction{
+                val note = rating / ratingBar.numStars
+                soundtrack?.note = note
+                it.copyToRealmOrUpdate(soundtrack!!)
+            }
+        }
     }
 
     private fun getPreviousPosition(position:Int):Int{
@@ -139,6 +147,9 @@ class PlayerActivity : AppCompatActivity() {
             player_artist_name.text = soundtrack.artist?.name
             player_end_time_text.text = soundtrack.duration?.toLong()?.let { formatTime(it) }
             player_start_time_Text.text = formatTime(0)
+            if(soundtrack.note == null) player_rating_bar.rating = 0F
+            else player_rating_bar.rating = soundtrack.note!! * player_rating_bar.numStars
+
             if(mBound){
                 player_pause_button.setBackgroundResource(R.drawable.ic_pause_white_50dp)
                 musicPlayerService.stopAndReset()
@@ -162,6 +173,7 @@ class PlayerActivity : AppCompatActivity() {
         unbindService(connection)
         stopRefresh()
         mBound = false
+        Log.d("Testy", "Stop")
     }
 
     /** Code executed periodically to display and display the timer */

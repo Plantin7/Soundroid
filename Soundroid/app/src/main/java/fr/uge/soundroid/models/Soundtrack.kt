@@ -69,7 +69,7 @@ open class Soundtrack(
         if (title != other.title) return false
         if (path != other.path) return false
         if (duration != other.duration) return false
-        if ( note != other.note ) return false
+        if (note != other.note ) return false
         if (artist != other.artist) return false
         if (album != other.album) return false
 

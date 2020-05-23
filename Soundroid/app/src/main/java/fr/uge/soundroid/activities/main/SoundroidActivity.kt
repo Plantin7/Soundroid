@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -54,8 +55,17 @@ class SoundroidActivity : RequiringPermissionActivity() {
                 ).show()
             },
             Runnable {
+                val currentSoundtrackList = SoundtrackRepository.findAll()
                 val songModelData = getSoundtracks()
-                SoundtrackRepository.saveSoundtrackList(songModelData)
+                val diffList = ArrayList<Soundtrack>()
+                for(songModel in songModelData) {
+                    if(currentSoundtrackList.find {it.hashCode() == songModel.hashCode()} == null) {
+                        diffList.add(songModel)
+                    }
+                }
+                Log.d("Testy", diffList.toString())
+                SoundtrackRepository.saveSoundtrackList(diffList)
+                // TODO Remove removed soundtrack
             })
     }
 
