@@ -14,7 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="q">
-        <activity android:name=".activities.others.AlbumActivity"></activity>
+        <activity
+            android:name=".activities.others.AlbumActivity"
+            android:theme="@style/AppTheme.ActionBar.Transparent"/>
         <activity
             android:name=".activities.others.SearchActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
