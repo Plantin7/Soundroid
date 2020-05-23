@@ -14,13 +14,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="q">
+        <activity
+            android:name=".activities.others.SearchActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activities.others.PlayerActivity" />
         <activity android:name=".utils.RequiringPermissionActivity" />
         <activity
             android:name=".activities.main.SoundroidActivity"
             android:label="@string/title_main_activity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.ActionBar.Transparent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
