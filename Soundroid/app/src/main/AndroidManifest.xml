@@ -16,6 +16,7 @@
         tools:targetApi="q">
         <activity android:name=".activities.others.PlayerActivity"
                   android:screenOrientation="portrait"
+                  android:theme="@style/AppTheme.ActionBar.Transparent"
                   android:parentActivityName=".activities.main.SoundroidActivity" />
         <activity
             android:name=".activities.others.SearchActivity"
