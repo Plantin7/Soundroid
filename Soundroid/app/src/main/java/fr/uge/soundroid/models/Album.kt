@@ -56,7 +56,7 @@ open class Album (
 
     override fun getNameForSearch(): String {
         return if ( name != null ) {
-            name!!
+            "Album - " + name!!
         } else {
             "Unknown Album name"
         }

@@ -38,7 +38,7 @@ open class Playlist(
 
     override fun getNameForSearch(): String {
         return if ( title != null ) {
-            title!!
+            "Playlist - " + title!!
         } else {
             "Unknown playlist name"
         }

@@ -2,6 +2,7 @@ package fr.uge.soundroid.repositories
 
 import android.util.Log
 import fr.uge.soundroid.models.Soundtrack
+import io.realm.Case
 import io.realm.Realm
 import io.realm.RealmResults
 
@@ -67,7 +68,7 @@ object SoundtrackRepository {
         val query = realm.where<Soundtrack>(Soundtrack::class.java)
 
         conditions.forEach {
-            query.like(it.key, "*${it.value}*")
+            query.like(it.key, "*${it.value}*", Case.INSENSITIVE)
         }
 
         return query.findAll()

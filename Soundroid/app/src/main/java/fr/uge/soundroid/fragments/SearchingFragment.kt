@@ -35,7 +35,7 @@ class SearchingFragment : Fragment(), View.OnClickListener {
 
             searchList.clear()
 
-            if ( s!= null && s.length > 3 ) {
+            if ( s!= null && s.length > 0 ) {
                 val searchResult = SearchingService.search(s.toString())
                 searchList.addAll(searchResult)
             }

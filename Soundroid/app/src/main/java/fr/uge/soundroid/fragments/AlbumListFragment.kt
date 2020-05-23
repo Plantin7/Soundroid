@@ -1,5 +1,6 @@
 package fr.uge.soundroid.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.soundroid.R
+import fr.uge.soundroid.activities.others.AlbumActivity
 import fr.uge.soundroid.adapters.AlbumAdapter
 import fr.uge.soundroid.models.Album
 import fr.uge.soundroid.repositories.AlbumRepository
@@ -37,7 +39,9 @@ class AlbumListFragment  : Fragment(), View.OnClickListener  {
         val index = v.tag as Int
         val selectedAlbum = albumList[index]
 
-        // TODO
+        val intent = Intent(context, AlbumActivity::class.java)
+        intent.putExtra("albumId", selectedAlbum.id)
+        startActivity(intent)
     }
 
 }
