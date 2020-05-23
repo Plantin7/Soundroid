@@ -1,6 +1,8 @@
 package fr.uge.soundroid.models
 
+import io.realm.RealmList
 import io.realm.RealmObject
+import io.realm.annotations.LinkingObjects
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.Required
 import java.lang.AssertionError
@@ -11,9 +13,30 @@ open class Artist(
 
     @Required
     var name: String? = null): RealmObject(), SoundroidSearchable {
+
+    var soundtracks =  RealmList<Soundtrack>()
+
+    fun addSoundtrack(soundtrack: Soundtrack): Artist {
+        soundtracks.add(soundtrack)
+        return this
+    }
+
+    fun addSoundtrackList(list: List<Soundtrack>): Artist {
+        for ( soundtrack in list ) {
+            addSoundtrack(soundtrack)
+        }
+
+        return this
+    }
+
+    fun soundtrackNumber(): Int {
+        return soundtracks.size;
+    }
+
+
     override fun getNameForSearch(): String {
         return if ( name != null ) {
-            name!!
+            "Artist - " + name!!
         } else {
             "Unknown Artist Name"
         }

@@ -103,11 +103,14 @@ class SoundroidActivity : RequiringPermissionActivity() {
             this.duration = duration
 
             val newArtist = createArtist(artistName)
+            newArtist.addSoundtrack(this)
             /** Artist of the soundtrack */
             artist = newArtist
 
             /** Album of the soundtrack */
-            album = createAlbum(albumName, albumPicture, newArtist)
+            val newAlbum = createAlbum(albumName, albumPicture, newArtist)
+            newAlbum.addSoundtrack(this)
+            album = newAlbum
             initPrimaryKey()
         }
     }

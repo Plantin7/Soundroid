@@ -2,6 +2,7 @@ package fr.uge.soundroid.repositories
 
 import android.util.Log
 import fr.uge.soundroid.models.Album
+import io.realm.Case
 import io.realm.Realm
 import io.realm.RealmResults
 
@@ -64,7 +65,7 @@ object AlbumRepository {
         val query = realm.where<Album>(Album::class.java)
 
         conditions.forEach {
-            query.like(it.key, "*${it.value}*")
+            query.like(it.key, "*${it.value}*", Case.INSENSITIVE)
         }
 
         return query.findAll()

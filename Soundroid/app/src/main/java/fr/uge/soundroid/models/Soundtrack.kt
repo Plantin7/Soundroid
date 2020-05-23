@@ -53,7 +53,7 @@ open class Soundtrack(
 
     override fun getNameForSearch(): String {
         return if ( title != null ) {
-            title!!
+            "Song - " + title!!
         } else {
             "Unknown Soundtrack title"
         }
