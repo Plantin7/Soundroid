@@ -4,14 +4,12 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
-import android.view.MenuItem
-import android.view.Window
-import android.view.WindowManager
+import android.util.Log
+import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import fr.uge.soundroid.R
 import fr.uge.soundroid.models.Soundtrack
@@ -39,10 +37,12 @@ class PlayerActivity : AppCompatActivity() {
             val binder = service as MusicPlayerService.LocalBinder
             musicPlayerService = binder.getService()
             musicPlayerService.setSong(soundtrack!!.path)
+            player_seekBar.max = musicPlayerService.getDuration() / 1000
             mBound = true
         }
 
         override fun onServiceDisconnected(arg0: ComponentName) {
+            stopRefresh()
             mBound = false
         }
     }
@@ -60,9 +60,9 @@ class PlayerActivity : AppCompatActivity() {
         soundtrackList = SoundtrackRepository.findAll()
         updateActivityView(soundtrack)
 
+        /** Play and Pause Music*/
         player_pause_button.setOnClickListener{
             if(mBound) {
-                player_seekBar.max = musicPlayerService.getDuration()
                 if(!musicPlayerService.isPlaying()){
                     musicPlayerService.playSong()
                     player_pause_button.setBackgroundResource(R.drawable.ic_pause_white_50dp)
@@ -76,6 +76,7 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
 
+        /** Next Music */
         player_next_button.setOnClickListener{
             if(mBound) {
                 currentPosition = getNextPosition(currentPosition)
@@ -84,6 +85,7 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
 
+        /** Previous Music */
         player_previous_button.setOnClickListener{
             if(mBound) {
                 currentPosition = getPreviousPosition(currentPosition)
@@ -91,6 +93,25 @@ class PlayerActivity : AppCompatActivity() {
                 updateActivityView(soundtrack)
             }
         }
+
+        /** Seek Bar Progress */
+        player_seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if(progress == seekBar?.max){
+                    Log.d("Testy", "Ah ouais daccow")
+                    stopRefresh()
+                    player_next_button.performClick() // Change music
+                }
+                if(mBound && fromUser) {
+                    //player_seekBar.progress = currentPosition
+                    musicPlayerService.seekTo(progress * 1000)
+                }
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                musicPlayerService.seekTo(seekBar.progress * 1000)
+            }
+        })
     }
 
     private fun getPreviousPosition(position:Int):Int{
@@ -119,6 +140,7 @@ class PlayerActivity : AppCompatActivity() {
                 musicPlayerService.stopAndReset()
                 musicPlayerService.setSong(soundtrack.path)
                 musicPlayerService.playSong()
+                player_seekBar.max = musicPlayerService.getDuration() / 1000
                 updateSeekBarRunnable.run()
             }
         }
@@ -141,7 +163,10 @@ class PlayerActivity : AppCompatActivity() {
     /** Code executed periodically to display and display the timer */
     private val updateSeekBarRunnable = Runnable {
         handler.postDelayed(getUpdateSeekBarRunnable(), 1000)
-        updateSeekBar()
+        val currentPosition = musicPlayerService.getCurrentPosition()
+        if(mBound) {
+            updateSeekBar(currentPosition)
+        }
     }
 
     /** Required to allow recursive call from increment runnable  */
@@ -153,15 +178,10 @@ class PlayerActivity : AppCompatActivity() {
         handler.removeCallbacks(getUpdateSeekBarRunnable())
     }
 
-
     /** Update all age of entries*/
-    private fun updateSeekBar() {
-        val totalDuration = musicPlayerService.getDuration()
-        val currentPosition = musicPlayerService.getCurrentPosition()
-        if(mBound && currentPosition < totalDuration) {
-            player_seekBar.progress = currentPosition
-            player_start_time_Text.text = formatTime(currentPosition.toLong())
-        }
+    private fun updateSeekBar(currentPosition:Int) {
+        player_seekBar.progress = currentPosition / 1000
+        player_start_time_Text.text = formatTime(currentPosition.toLong())
     }
 
     private fun formatTime(millis: Long): String {

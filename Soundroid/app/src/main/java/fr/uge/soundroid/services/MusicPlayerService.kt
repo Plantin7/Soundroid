@@ -76,4 +76,8 @@ class MusicPlayerService : Service() {
     fun isPlaying():Boolean {
         return mediaPlayer!!.isPlaying
     }
+
+    fun seekTo(msec:Int) {
+        mediaPlayer!!.seekTo(msec)
+    }
 }
