@@ -14,7 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="q">
-        <activity android:name=".activities.others.PlayerActivity" />
+        <activity android:name=".activities.others.PlayerActivity"
+                  android:screenOrientation="portrait"
+                  android:parentActivityName=".activities.main.SoundroidActivity" />
+
         <activity android:name=".utils.RequiringPermissionActivity" />
         <activity
             android:name=".activities.main.SoundroidActivity"

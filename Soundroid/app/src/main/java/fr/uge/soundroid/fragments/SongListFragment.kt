@@ -2,7 +2,6 @@ package fr.uge.soundroid.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,6 @@ import fr.uge.soundroid.adapters.SongListAdapter
 import fr.uge.soundroid.adapters.SongListAdapter.ItemClickListener
 import fr.uge.soundroid.models.Soundtrack
 import fr.uge.soundroid.repositories.SoundtrackRepository
-import fr.uge.soundroid.services.MusicPlayerService
 import io.realm.Realm
 import io.realm.RealmChangeListener
 
@@ -26,14 +24,14 @@ class SongListFragment : Fragment(), ItemClickListener {
     private lateinit var songListAdapter: SongListAdapter
     private lateinit var realm: Realm
     private lateinit var realmListener:RealmChangeListener<Realm>
-    //private lateinit var realmListener:RealmChangeListener<SoundtrackRepository>
+    private lateinit var soundtrackModelData : ArrayList<Soundtrack>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_song_list, container, false)
-        val songModelData = ArrayList(SoundtrackRepository.findSoundtracksList(HashMap()))
+        soundtrackModelData = ArrayList(SoundtrackRepository.findSoundtracksList(HashMap()))
         recyclerView = rootView.findViewById(R.id.recyclerView) as RecyclerView
         recyclerView.setHasFixedSize(true)
-        songListAdapter = SongListAdapter(songModelData)
+        songListAdapter = SongListAdapter(soundtrackModelData)
         recyclerView.adapter = songListAdapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
         songListAdapter.setClickListener(this)
@@ -46,6 +44,7 @@ class SongListFragment : Fragment(), ItemClickListener {
                 songListAdapter.setClickListener(this)
             }
         }*/
+        // TODO
         realm = Realm.getDefaultInstance()
         realmListener = RealmChangeListener {
             val ne = ArrayList(SoundtrackRepository.findSoundtracksList(HashMap()))
@@ -59,12 +58,9 @@ class SongListFragment : Fragment(), ItemClickListener {
     }
 
     override fun onItemClick(view: View, song: Soundtrack) {
-        Toast.makeText(context, song.path, Toast.LENGTH_SHORT).show()
         val intent = Intent(context, PlayerActivity::class.java)
-        intent.putExtra("soundtrack", song.title)
+        val position = soundtrackModelData.indexOf(song)
+        intent.putExtra("soundtrackId", song.id).putExtra("position", position)
         startActivity(intent)
-        //val intent = Intent(context, MusicPlayerService::class.java)
-        //intent.putExtra("song", song.path)
-        //context?.startService(intent)
     }
 }

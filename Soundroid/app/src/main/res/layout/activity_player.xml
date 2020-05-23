@@ -8,7 +8,7 @@
     android:weightSum="10"
     tools:context=".activities.others.PlayerActivity"
     android:background="@drawable/app_background">
-    
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -22,7 +22,7 @@
             android:layout_height="250dp"
             android:src="@mipmap/kissclipart"
             android:contentDescription="Album Picture" />
-        
+
         <TextView
             android:id="@+id/player_soundtrack_name"
             android:layout_width="match_parent"
@@ -85,7 +85,7 @@
                 android:text="0:20" />
 
             <TextView
-                android:id="@+id/play_startText"
+                android:id="@+id/player_end_time_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@id/player_seekBar"
@@ -104,7 +104,8 @@
                 android:layout_alignTop="@id/player_seekBar"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="45dp"
-                android:background="@drawable/ic_pause_white_50dp" />
+                android:focusable="true"
+                android:background="@drawable/ic_play_arrow_white_50dp" />
 
             <Button
                 android:id="@+id/player_previous_button"
