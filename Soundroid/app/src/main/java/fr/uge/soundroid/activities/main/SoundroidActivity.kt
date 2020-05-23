@@ -2,16 +2,20 @@ package fr.uge.soundroid.activities.main
 
 import android.Manifest
 import android.content.ContentUris
+import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import fr.uge.soundroid.R
+import fr.uge.soundroid.activities.others.SearchActivity
 import fr.uge.soundroid.models.Album
 import fr.uge.soundroid.models.Artist
 import fr.uge.soundroid.models.Soundtrack
@@ -31,6 +35,7 @@ class SoundroidActivity : RequiringPermissionActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_soundroid)
+
         val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
         val viewPager: ViewPager = findViewById(R.id.view_pager)
         viewPager.adapter = sectionsPagerAdapter
@@ -123,5 +128,27 @@ class SoundroidActivity : RequiringPermissionActivity() {
             this.artist = artist
             initPrimaryKey()
         }
+    }
+
+    /**
+     * Add the menu to the main activity.
+     */
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    /**
+     * Click event on the menus
+     */
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when ( item.itemId ) {
+            R.id.main_menu_item_search -> {
+                val intent = Intent(this, SearchActivity::class.java)
+                startActivity(intent)
+            }
+        }
+
+        return true
     }
 }
