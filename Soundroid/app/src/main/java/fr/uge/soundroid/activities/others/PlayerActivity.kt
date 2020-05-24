@@ -12,6 +12,7 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import fr.uge.soundroid.R
+import fr.uge.soundroid.fragments.TagDialogFragment
 import fr.uge.soundroid.models.Soundtrack
 import fr.uge.soundroid.repositories.SoundtrackRepository
 import fr.uge.soundroid.repositories.SoundtrackRepository.findSoundtrackById
@@ -24,6 +25,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private lateinit var handler:Handler
     private var soundtrack:Soundtrack? = null
+    private var soundtrackId: Int = 0
     private lateinit var soundtrackList:List<Soundtrack>
     private var currentPosition:Int = -1
     private lateinit var musicPlayerService: MusicPlayerService
@@ -55,7 +57,7 @@ class PlayerActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = ""
 
-        val soundtrackId = intent.getIntExtra("soundtrackId", 0)
+        soundtrackId = intent.getIntExtra("soundtrackId", 0)
         currentPosition = intent.getIntExtra("position", 0)
         soundtrack = findSoundtrackById(soundtrackId)
         soundtrackList = SoundtrackRepository.findAll()
@@ -81,7 +83,9 @@ class PlayerActivity : AppCompatActivity() {
         player_next_button.setOnClickListener{
             if(mBound) {
                 currentPosition = getNextPosition(currentPosition)
-                soundtrack = soundtrackList[currentPosition]
+                val tmpSoundtrack = soundtrackList[currentPosition]
+                soundtrackId = tmpSoundtrack.id!!
+                soundtrack = tmpSoundtrack
                 updateActivityView(soundtrack)
             }
         }
@@ -90,7 +94,9 @@ class PlayerActivity : AppCompatActivity() {
         player_previous_button.setOnClickListener{
             if(mBound) {
                 currentPosition = getPreviousPosition(currentPosition)
-                soundtrack = soundtrackList[currentPosition]
+                val tmpSoundtrack = soundtrackList[currentPosition]
+                soundtrackId = tmpSoundtrack.id!!
+                soundtrack = tmpSoundtrack
                 updateActivityView(soundtrack)
             }
         }
@@ -122,6 +128,13 @@ class PlayerActivity : AppCompatActivity() {
                 val note = rating / ratingBar.numStars
                 soundtrack?.note = note
                 it.copyToRealmOrUpdate(soundtrack!!)
+            }
+        }
+
+        player_tag_button.setOnClickListener {
+            if(mBound){
+                val dialog = TagDialogFragment.createTagDialogFragment(soundtrackId)
+                dialog.show(supportFragmentManager, "TagDialog")
             }
         }
     }
