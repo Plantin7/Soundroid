@@ -23,7 +23,7 @@ object SoundtrackRepository {
      */
     fun saveSoundtrackList(elements: List<Soundtrack>) {
         realm.beginTransaction()
-        realm.deleteAll() // TODO En parler avec guillaume !!!!
+        //realm.deleteAll() // TODO En parler avec guillaume !!!!
         for ( element in elements ) {
             realm.copyToRealmOrUpdate(element)
         }

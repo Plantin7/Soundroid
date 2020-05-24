@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import fr.uge.soundroid.R
 import fr.uge.soundroid.fragments.AlbumListFragment
+import fr.uge.soundroid.fragments.PlaylistListFragment
 import fr.uge.soundroid.fragments.SongListFragment
 import fr.uge.soundroid.models.Album
 import fr.uge.soundroid.models.Song
@@ -15,7 +16,8 @@ import fr.uge.soundroid.models.Song
 private val TAB_TITLES = arrayOf(
     R.string.Songs,
     R.string.Albums,
-    R.string.Artistes
+    R.string.Artistes,
+    R.string.Playlists
 )
 
 /**
@@ -40,6 +42,11 @@ class SectionsPagerAdapter(private val context: Context, private val fm: Fragmen
             2 ->{
 
                 SongListFragment()
+            }
+
+            // Playlists
+            3 -> {
+                PlaylistListFragment()
             }
             else -> SongListFragment()
         }

@@ -24,6 +24,7 @@ class AlbumListFragment  : Fragment(), View.OnClickListener  {
         val view = inflater.inflate(R.layout.fragment_album_list, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.fragment_album_recycler_view)
 
+        albumList.clear()
         albumList.addAll(AlbumRepository.findAll())
 
         recyclerView.layoutManager = GridLayoutManager(context, 2)

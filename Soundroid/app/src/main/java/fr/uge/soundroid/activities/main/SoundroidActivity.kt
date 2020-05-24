@@ -21,8 +21,6 @@ import fr.uge.soundroid.models.Artist
 import fr.uge.soundroid.models.Soundtrack
 import fr.uge.soundroid.repositories.SoundtrackRepository
 import fr.uge.soundroid.utils.RequiringPermissionActivity
-import java.io.ByteArrayOutputStream
-import java.io.FileNotFoundException
 
 
 /**

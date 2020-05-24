@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import fr.uge.soundroid.R
 import fr.uge.soundroid.activities.others.PlayerActivity
 import fr.uge.soundroid.adapters.SongListAdapter
-import fr.uge.soundroid.listener.DefaultPopupMenuListener
+import fr.uge.soundroid.listener.DefaultPopupSoundtrackMenuListener
 import fr.uge.soundroid.models.Album
 import fr.uge.soundroid.models.Soundtrack
 import io.realm.Realm
@@ -61,7 +61,7 @@ class AlbumSoundtrackListFragment(private val album: Album) : Fragment(), SongLi
         val popupMenu = PopupMenu(context, view.findViewById(R.id.item_song_more))
         popupMenu.inflate(R.menu.popup_soundtrack_more)
         if ( context == null ) return
-        popupMenu.setOnMenuItemClickListener(DefaultPopupMenuListener(soundtrack, soundtrackList, index, context!!, parentFragmentManager))
+        popupMenu.setOnMenuItemClickListener(DefaultPopupSoundtrackMenuListener(soundtrack, soundtrackList, index, context!!, parentFragmentManager))
         popupMenu.show()
     }
 }

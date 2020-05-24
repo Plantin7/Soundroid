@@ -15,7 +15,7 @@ import fr.uge.soundroid.models.Soundtrack
 import fr.uge.soundroid.repositories.PlaylistRepository
 import fr.uge.soundroid.repositories.SoundtrackRepository
 
-class DefaultPopupMenuListener(
+class DefaultPopupSoundtrackMenuListener(
     val soundtrack: Soundtrack,
     val soundtrackList: ArrayList<Soundtrack>,
     val index: Int,

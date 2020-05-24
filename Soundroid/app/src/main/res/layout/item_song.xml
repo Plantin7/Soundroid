@@ -71,7 +71,6 @@
             android:contentDescription="more"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="onMoreClick"
             android:background="#00FFFFFF"/>
 
     </RelativeLayout>
