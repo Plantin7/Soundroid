@@ -5,14 +5,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.soundroid.R
 import fr.uge.soundroid.activities.others.PlayerActivity
 import fr.uge.soundroid.adapters.SongListAdapter
+import fr.uge.soundroid.listener.DefaultPopupMenuListener
 import fr.uge.soundroid.models.Album
 import fr.uge.soundroid.models.Soundtrack
+import io.realm.Realm
+import io.realm.RealmChangeListener
 
 class AlbumSoundtrackListFragment(private val album: Album) : Fragment(), SongListAdapter.ItemClickListener {
 
@@ -25,10 +29,19 @@ class AlbumSoundtrackListFragment(private val album: Album) : Fragment(), SongLi
         val recyclerView = view.findViewById<RecyclerView>(R.id.fragment_album_soundtrack_list_recycler_view)
         adapter.setClickListener(this)
 
+        soundtrackList.clear()
         soundtrackList.addAll(album.soundtracks)
 
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
+
+        val realm = Realm.getDefaultInstance()
+        val realmListener: RealmChangeListener<Realm> = RealmChangeListener {
+            soundtrackList.clear()
+            soundtrackList.addAll(album.soundtracks)
+            adapter.notifyDataSetChanged()
+        }
+        realm.addChangeListener(realmListener)
 
         return view
     }
@@ -39,4 +52,16 @@ class AlbumSoundtrackListFragment(private val album: Album) : Fragment(), SongLi
         startActivity(intent)
     }
 
+    override fun onMoreClick(view: View) {
+        if ( view.tag == null ) return
+
+        val index: Int = view.tag as Int
+        val soundtrack = soundtrackList[index]
+
+        val popupMenu = PopupMenu(context, view.findViewById(R.id.item_song_more))
+        popupMenu.inflate(R.menu.popup_soundtrack_more)
+        if ( context == null ) return
+        popupMenu.setOnMenuItemClickListener(DefaultPopupMenuListener(soundtrack, soundtrackList, index, context!!, parentFragmentManager))
+        popupMenu.show()
+    }
 }
