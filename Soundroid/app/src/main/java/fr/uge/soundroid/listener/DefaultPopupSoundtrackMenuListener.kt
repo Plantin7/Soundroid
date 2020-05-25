@@ -15,12 +15,12 @@ import fr.uge.soundroid.models.Soundtrack
 import fr.uge.soundroid.repositories.PlaylistRepository
 import fr.uge.soundroid.repositories.SoundtrackRepository
 
-class DefaultPopupSoundtrackMenuListener(
+open class DefaultPopupSoundtrackMenuListener(
     val soundtrack: Soundtrack,
     val soundtrackList: ArrayList<Soundtrack>,
     val index: Int,
     val context: Context,
-    private val fragmentManager: FragmentManager) : PopupMenu.OnMenuItemClickListener {
+    val fragmentManager: FragmentManager) : PopupMenu.OnMenuItemClickListener {
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
         when ( item.itemId ) {

@@ -1,5 +1,6 @@
 package fr.uge.soundroid.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.soundroid.R
+import fr.uge.soundroid.activities.others.PlaylistActivity
 import fr.uge.soundroid.adapters.PlaylistListAdapter
 import fr.uge.soundroid.listener.DefaultPopupPlaylistMenuListener
 import fr.uge.soundroid.listener.DefaultPopupSoundtrackMenuListener
@@ -47,7 +49,9 @@ class PlaylistListFragment : Fragment(), PlaylistListAdapter.ItemClickListener {
     }
 
     override fun onItemClick(view: View, index: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val intent = Intent(context, PlaylistActivity::class.java)
+        intent.putExtra("playlistId", playlistList[index].id)
+        startActivity(intent)
     }
 
     override fun onMoreClick(view: View, index: Int) {

@@ -18,4 +18,7 @@
     <string name="create_playlist_toast_success">La nouvelle playlist a bien été créée</string>
     <string name="create_playlist_toast_already_exist_error">Impossible de créer la playlist ! Elle existe déjà !</string>
     <string name="remove_playlist_dialog_message">Êtes vous sûr de vouloir supprimer la playlist %1$s ?</string>
+    <string name="remove_soundtrack_from_playlist_dialog_confirm">Confirmer</string>
+    <string name="remove_soundtrack_from_playlist_dialog_cancel">Annuler</string>
+    <string name="remove_soundtrack_from_playlist_dialog_message">Êtes vous sûr de vouloir supprimer la musique %1$s de la playlist %2$s ?</string>
 </resources>

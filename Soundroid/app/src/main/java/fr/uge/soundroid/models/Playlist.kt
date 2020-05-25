@@ -53,7 +53,7 @@ open class Playlist(
 
         if (id != other.id) return false
         if (title != other.title) return false
-        if (soundtracks != other.soundtracks) return false
+        //if (soundtracks != other.soundtracks) return false
 
         return true
     }
