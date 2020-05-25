@@ -36,4 +36,13 @@ open class Tag(
         }
     }
 
+    fun exportToJson(): String {
+        val s = "{" +
+                "\"id\": $id," +
+                "\"name\": \"$name\"" +
+                "}"
+
+        return s
+    }
+
 }

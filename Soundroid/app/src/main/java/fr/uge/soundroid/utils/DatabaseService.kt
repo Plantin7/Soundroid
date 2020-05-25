@@ -1,7 +1,10 @@
 package fr.uge.soundroid.utils
 
 import android.util.Log
+import fr.uge.soundroid.models.*
 import fr.uge.soundroid.repositories.*
+import org.json.JSONArray
+import org.json.JSONObject
 import java.lang.StringBuilder
 
 object DatabaseService {
@@ -94,6 +97,136 @@ object DatabaseService {
         PlaylistRepository.deleteAllPlaylists()
         SoundtrackRepository.deleteAllSoundtracks()
         TagRepository.deleteAllTags()
+    }
+
+    fun exportToJson(): String {
+        var s: String = "{" +
+                "\"albums\": ["
+
+        for ( album in AlbumRepository.findAll() ) {
+            s += album.exportToJson() + ","
+        }
+        s += "]," +
+                "\"artists\": ["
+
+        for ( artist in ArtistRepository.findAll() ) {
+            s += artist.exportToJson() + ","
+        }
+        s += "]," +
+                "\"playlists\": ["
+
+        for ( playlist in PlaylistRepository.findAll() ) {
+            s += playlist.exportToJson() + ","
+        }
+        s += "]," +
+                "\"soundtracks\": ["
+
+        for ( soundtrack in SoundtrackRepository.findAll() ) {
+            s += soundtrack.exportToJson() + ","
+        }
+
+        s += "]," +
+                "\"tags\": ["
+        for ( tag in TagRepository.findAll() ) {
+            s += tag.exportToJson() + ","
+        }
+        s += "]}"
+
+        return s
+    }
+
+    fun importFromJson(json: String) {
+        deleteAll()
+        val jsonObject = JSONObject(json)
+
+        val jsonArtistArray = jsonObject.getJSONArray("artists")
+        for (index in 0 until jsonArtistArray.length()-1) {
+            val jsonArtistObject = jsonArtistArray.getJSONObject(index)
+            val artist = Artist(jsonArtistObject.getInt("id"), jsonArtistObject.getString("name"))
+            ArtistRepository.saveArtist(artist)
+        }
+
+        val jsonAlbumsArray = jsonObject.getJSONArray("albums")
+        for (index in 0 until jsonAlbumsArray.length()-1) {
+            val jsonAlbumObject = jsonAlbumsArray.getJSONObject(index)
+            val artist = ArtistRepository.findArtistById(jsonAlbumObject.getInt("artist"))
+            val album = Album(jsonAlbumObject.getInt("id"), jsonAlbumObject.getString("name"), jsonAlbumObject.getString("albumPicture"), artist)
+            AlbumRepository.saveAlbum(album)
+        }
+
+        val jsonPlaylistsArray = jsonObject.getJSONArray("playlists")
+        for (index in 0 until jsonPlaylistsArray.length()-1) {
+            val jsonPlaylistObject = jsonPlaylistsArray.getJSONObject(index)
+            val playlist = Playlist(jsonPlaylistObject.getInt("id"), jsonPlaylistObject.getString("title"))
+            PlaylistRepository.savePlaylist(playlist)
+        }
+
+        val jsonTagsArray = jsonObject.getJSONArray("tags")
+        for (index in 0 until jsonTagsArray.length()-1) {
+            val jsonTagObject = jsonTagsArray.getJSONObject(index)
+            val tag = Tag(jsonTagObject.getInt("id"), jsonTagObject.getString("name"))
+            tag.initPrimaryKey()
+            TagRepository.saveTag(tag)
+        }
+
+        val jsonSoundtrackArray = jsonObject.getJSONArray("soundtracks")
+        for (index in 0 until jsonSoundtrackArray.length()-1) {
+            val jsonSoundtrackObject = jsonSoundtrackArray.getJSONObject(index)
+            val artist = ArtistRepository.findArtistById(jsonSoundtrackObject.getInt("artist"))
+            val album = AlbumRepository.findAlbumById(jsonSoundtrackObject.getInt("album"))
+            val note: Float?
+            if ( jsonSoundtrackObject.isNull("note" ) ) {
+                note = null
+            } else {
+                note = jsonSoundtrackObject.getDouble("note").toFloat()
+            }
+
+            val soundtrack = Soundtrack(
+                jsonSoundtrackObject.getInt("id"),
+                jsonSoundtrackObject.getString("title"),
+                jsonSoundtrackObject.getString("path"),
+                jsonSoundtrackObject.getInt("duration"),
+                note,
+                artist,
+                album
+            )
+            soundtrack.initPrimaryKey()
+            SoundtrackRepository.saveSoundtrack(soundtrack)
+        }
+
+        AlbumRepository.realm.executeTransaction {
+            for (index in 0 until jsonAlbumsArray.length() - 1) {
+                val jsonAlbumObject = jsonAlbumsArray.getJSONObject(index)
+                val album = AlbumRepository.findAlbumById(jsonAlbumObject.getInt("id"))
+
+                val jsonSoundtracksAlbum = jsonAlbumObject.getJSONArray("soundtracks")
+                for (j in 0 until jsonSoundtracksAlbum.length() - 1) {
+                    val jsonSoundtrackObject = jsonSoundtracksAlbum.getJSONObject(j)
+                    val soundtrack =
+                        SoundtrackRepository.findSoundtrackById(jsonSoundtrackObject.getInt("id"))
+                    if (soundtrack != null) {
+                        album?.addSoundtrack(soundtrack)
+                    }
+                }
+                it.copyToRealmOrUpdate(album!!)
+            }
+
+            for (index in 0 until jsonPlaylistsArray.length() - 1) {
+                val jsonPlaylistObject = jsonPlaylistsArray.getJSONObject(index)
+                val playlist = PlaylistRepository.findPlaylistById(jsonPlaylistObject.getInt("id"))
+
+                val jsonSoundtracksPlaylist = jsonPlaylistObject.getJSONArray("soundtracks")
+                for (j in 0 until jsonSoundtracksPlaylist.length() - 1) {
+                    val jsonSoundtrackObject = jsonSoundtracksPlaylist.getJSONObject(j)
+                    val soundtrack =
+                        SoundtrackRepository.findSoundtrackById(jsonSoundtrackObject.getInt("id"))
+                    if (soundtrack != null) {
+                        playlist?.addSoundtrack(soundtrack)
+                    }
+                }
+                it.copyToRealmOrUpdate(playlist!!)
+            }
+        }
     }
 
 }

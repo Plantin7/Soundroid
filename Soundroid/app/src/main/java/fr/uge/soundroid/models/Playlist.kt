@@ -70,4 +70,18 @@ open class Playlist(
             throw AssertionError()
         }
     }
+
+    fun exportToJson(): String {
+        var s = "{" +
+                "\"id\": $id," +
+                "\"title\": \"$title\"," +
+                "\"soundtracks\": ["
+
+        for ( soundtrack in soundtracks ) {
+            s += "{\"id\": ${soundtrack.id}},"
+        }
+        s += "]}"
+
+        return s
+    }
 }

@@ -88,4 +88,24 @@ open class Soundtrack(
             throw AssertionError()
         }
     }
+
+    fun exportToJson(): String {
+        var s = "{" +
+                "\"id\": $id," +
+                "\"title\": \"$title\"," +
+                "\"path\": \"$path\"," +
+                "\"duration\": $duration," +
+                "\"note\": $note," +
+                "\"artist\": ${artist?.id}," +
+                "\"album\": ${album?.id}," +
+                "\"tags\": ["
+
+        for ( tag in tags ) {
+            s += "{\"id\": ${tag.id}},"
+        }
+
+        s += "]}"
+
+        return s
+    }
 }

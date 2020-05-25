@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -20,7 +21,10 @@ import fr.uge.soundroid.models.Album
 import fr.uge.soundroid.models.Artist
 import fr.uge.soundroid.models.Soundtrack
 import fr.uge.soundroid.repositories.SoundtrackRepository
+import fr.uge.soundroid.utils.DatabaseService
 import fr.uge.soundroid.utils.RequiringPermissionActivity
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 
 
 /**
@@ -28,6 +32,10 @@ import fr.uge.soundroid.utils.RequiringPermissionActivity
  * @author Vincent_Agullo
  */
 class SoundroidActivity : RequiringPermissionActivity() {
+
+    val EXPORT_INTENT_CODE: Int = 1
+
+    val IMPORT_INTENT_CODE: Int = 2
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -148,8 +156,53 @@ class SoundroidActivity : RequiringPermissionActivity() {
                 val intent = Intent(this, SearchActivity::class.java)
                 startActivity(intent)
             }
+            R.id.main_menu_export_database -> {
+                var chooseFile = Intent(Intent.ACTION_CREATE_DOCUMENT)
+                chooseFile.type = "*/*"
+                chooseFile = Intent.createChooser(chooseFile, "Select directory a file")
+                startActivityForResult(chooseFile, EXPORT_INTENT_CODE)
+                Log.i(SoundroidActivity::class.java.name, "Database dump saved.")
+            }
+            R.id.main_menu_import_database -> {
+                var chooseFile = Intent(Intent.ACTION_OPEN_DOCUMENT)
+                chooseFile.type = "*/*"
+                chooseFile = Intent.createChooser(chooseFile, "Select the file")
+                startActivityForResult(chooseFile, IMPORT_INTENT_CODE)
+            }
         }
 
         return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when(requestCode) {
+            EXPORT_INTENT_CODE -> {
+                if (resultCode == -1) {
+                    val fileUri = data?.data
+                    if ( fileUri != null ) {
+                        val json = DatabaseService.exportToJson()
+                        val os = contentResolver.openOutputStream(fileUri)
+                        os?.write(json.toByteArray(Charset.forName("UTF-8")))
+                        os?.close()
+                    }
+
+                }
+            }
+            IMPORT_INTENT_CODE -> {
+                if (resultCode == -1) {
+                    val fileUri = data?.data
+                    if ( fileUri != null ) {
+                        val ist = contentResolver.openInputStream(fileUri)
+                        val json = ist?.reader(Charset.forName("UTF-8"))?.readText()
+                        ist?.close()
+                        if ( json != null ) {
+                            DatabaseService.importFromJson(json)
+                        }
+                    }
+                }
+            }
+        }
     }
 }
