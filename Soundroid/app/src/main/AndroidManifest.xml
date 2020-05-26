@@ -14,6 +14,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="q">
+        <activity android:name=".activities.others.PlayerActivity"
+                  android:screenOrientation="portrait"
+                  android:theme="@style/AppTheme.ActionBar.Transparent"
+                  android:parentActivityName=".activities.main.SoundroidActivity" />
+        <activity android:name=".activities.others.AlbumActivity"></activity>
         <activity android:name=".activities.others.PlaylistActivity"
             android:theme="@style/AppTheme.ActionBar.Transparent" />
         <activity
@@ -22,7 +27,6 @@
         <activity
             android:name=".activities.others.SearchActivity"
             android:theme="@style/AppTheme.ActionBar.Transparent" />
-        <activity android:name=".activities.others.PlayerActivity" />
         <activity android:name=".utils.RequiringPermissionActivity" />
         <activity
             android:name=".activities.main.SoundroidActivity"

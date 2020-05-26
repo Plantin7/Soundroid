@@ -2,6 +2,9 @@ package fr.uge.soundroid.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.*
 import android.widget.PopupMenu
 import android.widget.Toast
@@ -25,7 +28,7 @@ class SongListFragment : Fragment(), ItemClickListener {
     private lateinit var recyclerView: RecyclerView
     private lateinit var realm: Realm
     private lateinit var realmListener:RealmChangeListener<Realm>
-    //private lateinit var realmListener:RealmChangeListener<SoundtrackRepository>
+    private lateinit var soundtrackModelData : ArrayList<Soundtrack>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_song_list, container, false)
@@ -48,6 +51,7 @@ class SongListFragment : Fragment(), ItemClickListener {
                 songListAdapter.setClickListener(this)
             }
         }*/
+        // TODO
         realm = Realm.getDefaultInstance()
         realmListener = RealmChangeListener {
             soundtrackList.clear()
@@ -60,13 +64,10 @@ class SongListFragment : Fragment(), ItemClickListener {
     }
 
     override fun onItemClick(view: View, song: Soundtrack) {
-        Toast.makeText(context, song.path, Toast.LENGTH_SHORT).show()
         val intent = Intent(context, PlayerActivity::class.java)
-        intent.putExtra("soundtrack", song.title)
+        val position = soundtrackModelData.indexOf(song)
+        intent.putExtra("soundtrackId", song.id).putExtra("position", position)
         startActivity(intent)
-        //val intent = Intent(context, MusicPlayerService::class.java)
-        //intent.putExtra("song", song.path)
-        //context?.startService(intent)
     }
 
     override fun onMoreClick(view: View) {
