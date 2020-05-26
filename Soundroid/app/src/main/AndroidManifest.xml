@@ -18,11 +18,9 @@
                   android:screenOrientation="portrait"
                   android:theme="@style/AppTheme.ActionBar.Transparent"
                   android:parentActivityName=".activities.main.SoundroidActivity" />
-        <activity android:name=".activities.others.AlbumActivity"></activity>
+        <activity android:name=".activities.others.AlbumActivity"
+                  android:theme="@style/AppTheme.ActionBar.Transparent"/>
         <activity android:name=".activities.others.PlaylistActivity"
-            android:theme="@style/AppTheme.ActionBar.Transparent" />
-        <activity
-            android:name=".activities.others.AlbumActivity"
             android:theme="@style/AppTheme.ActionBar.Transparent" />
         <activity
             android:name=".activities.others.SearchActivity"

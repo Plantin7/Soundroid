@@ -48,7 +48,7 @@ class AlbumSoundtrackListFragment(private val album: Album) : Fragment(), SongLi
 
     override fun onItemClick(view: View, song: Soundtrack) {
         val intent = Intent(context, PlayerActivity::class.java)
-        intent.putExtra("soundtrack", song.title)
+        intent.putExtra("soundtrackId", song.id)
         startActivity(intent)
     }
 

@@ -28,7 +28,6 @@ class SongListFragment : Fragment(), ItemClickListener {
     private lateinit var recyclerView: RecyclerView
     private lateinit var realm: Realm
     private lateinit var realmListener:RealmChangeListener<Realm>
-    private lateinit var soundtrackModelData : ArrayList<Soundtrack>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_song_list, container, false)
@@ -65,7 +64,7 @@ class SongListFragment : Fragment(), ItemClickListener {
 
     override fun onItemClick(view: View, song: Soundtrack) {
         val intent = Intent(context, PlayerActivity::class.java)
-        val position = soundtrackModelData.indexOf(song)
+        val position = soundtrackList.indexOf(song)
         intent.putExtra("soundtrackId", song.id).putExtra("position", position)
         startActivity(intent)
     }

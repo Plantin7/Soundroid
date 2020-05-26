@@ -74,7 +74,7 @@ class SearchingFragment() : Fragment(), View.OnClickListener {
         when ( selectedSearch ) {
             is Soundtrack -> {
                 val intent = Intent(context, PlayerActivity::class.java)
-                intent.putExtra("soundtrack", selectedSearch.title)
+                intent.putExtra("soundtrackId", selectedSearch.id)
                 startActivity(intent)
             }
             is Playlist -> {
