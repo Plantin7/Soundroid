@@ -20,6 +20,7 @@ import fr.uge.soundroid.activities.others.SearchActivity
 import fr.uge.soundroid.models.Album
 import fr.uge.soundroid.models.Artist
 import fr.uge.soundroid.models.Soundtrack
+import fr.uge.soundroid.repositories.AlbumRepository
 import fr.uge.soundroid.repositories.SoundtrackRepository
 import fr.uge.soundroid.utils.DatabaseService
 import fr.uge.soundroid.utils.RequiringPermissionActivity
@@ -62,6 +63,14 @@ class SoundroidActivity : RequiringPermissionActivity() {
             Runnable {
                 val songModelData = getSoundtracks()
                 SoundtrackRepository.saveSoundtrackList(songModelData)
+
+                SoundtrackRepository.realm.executeTransaction {
+                    for ( soundtrack in SoundtrackRepository.findAll() ) {
+                        val album = soundtrack.album ?: continue
+                        album.addSoundtrack(soundtrack)
+                        it.copyToRealmOrUpdate(album)
+                    }
+                }
             })
     }
 
@@ -115,7 +124,6 @@ class SoundroidActivity : RequiringPermissionActivity() {
 
             /** Album of the soundtrack */
             val newAlbum = createAlbum(albumName, albumPicture, newArtist)
-            newAlbum.addSoundtrack(this)
             album = newAlbum
             initPrimaryKey()
         }
