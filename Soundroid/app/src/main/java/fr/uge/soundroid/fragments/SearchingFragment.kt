@@ -4,16 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AutoCompleteTextView
-import android.widget.RadioButton
-import android.widget.RadioGroup
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fr.uge.soundroid.R
 import fr.uge.soundroid.activities.others.AlbumActivity
 import fr.uge.soundroid.activities.others.PlayerActivity
@@ -23,10 +21,12 @@ import fr.uge.soundroid.models.Album
 import fr.uge.soundroid.models.Playlist
 import fr.uge.soundroid.models.SoundroidSearchable
 import fr.uge.soundroid.models.Soundtrack
+import fr.uge.soundroid.repositories.PlaylistRepository
+import fr.uge.soundroid.repositories.SoundtrackRepository
 import fr.uge.soundroid.utils.SearchingService
 
 
-class SearchingFragment() : Fragment(), View.OnClickListener {
+class SearchingFragment() : Fragment(), View.OnClickListener, CreateResearchPlaylistDialogFragment.ConfirmCreateListener {
 
     private val searchList: ArrayList<SoundroidSearchable> = ArrayList()
 
@@ -35,6 +35,8 @@ class SearchingFragment() : Fragment(), View.OnClickListener {
     lateinit var recyclerView: RecyclerView
 
     lateinit var radioGroup: RadioGroup
+
+    lateinit var floatingactionbutton: FloatingActionButton
 
     lateinit var autoCompleteTextView: AutoCompleteTextView
 
@@ -93,6 +95,30 @@ class SearchingFragment() : Fragment(), View.OnClickListener {
             adapter.notifyDataSetChanged()
         }
 
+        floatingactionbutton = view.findViewById(R.id.fragment_searching_create_playlist)
+        floatingactionbutton.setOnClickListener {
+            val fragment = CreateResearchPlaylistDialogFragment()
+            fragment.listener = object : CreateResearchPlaylistDialogFragment.ConfirmCreateListener {
+                override fun onDialogConfirmCreateClick() {
+                    val editable = fragment.dialog?.findViewById<EditText>(R.id.dialog_create_playlist_edit_text)?.text
+                        ?: return
+                    val title = editable.toString()
+                    val newPlaylist = Playlist(null, title)
+
+                    for ( element in searchList ) {
+                        if ( element is Soundtrack ) {
+                            newPlaylist.addSoundtrack(element)
+                        }
+                    }
+
+                    newPlaylist.initPrimaryKey()
+
+                    PlaylistRepository.savePlaylist(newPlaylist)
+                }
+            }
+            fragment.show(parentFragmentManager, "confirmCreate")
+        }
+
         return view
     }
 
@@ -119,6 +145,10 @@ class SearchingFragment() : Fragment(), View.OnClickListener {
                 startActivity(intent)
             }
         }
+    }
+
+    override fun onDialogConfirmCreateClick() {
+
     }
 
 }
