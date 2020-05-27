@@ -72,12 +72,14 @@ object AlbumRepository {
      *
      * @return RealmResults<Album> the query result.
      */
-    private fun findAlbumsLike(conditions: Map<String, String>): RealmResults<Album> {
+    private fun findAlbumsLike(conditions: Map<String, String>, filter: String = "name", order: Sort = Sort.ASCENDING): RealmResults<Album> {
         val query = realm.where<Album>(Album::class.java)
 
         conditions.forEach {
             query.like(it.key, "*${it.value}*", Case.INSENSITIVE)
         }
+
+        query.sort(filter, order)
 
         return query.findAll()
     }
@@ -122,9 +124,11 @@ object AlbumRepository {
      *
      * @return The founded Album list.
      */
-    fun findLike(filters: Map<String, String>): List<Album> {
+    fun findLike(filters: Map<String, String>, filter: String = "name", order: Sort = Sort.ASCENDING): List<Album> {
         return findAlbumsLike(
-            filters
+            filters,
+            filter,
+            order
         ).toList()
     }
 

@@ -4,10 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +25,7 @@ import fr.uge.soundroid.models.SoundroidSearchable
 import fr.uge.soundroid.models.Soundtrack
 import fr.uge.soundroid.utils.SearchingService
 
+
 class SearchingFragment() : Fragment(), View.OnClickListener {
 
     private val searchList: ArrayList<SoundroidSearchable> = ArrayList()
@@ -30,7 +34,13 @@ class SearchingFragment() : Fragment(), View.OnClickListener {
 
     lateinit var recyclerView: RecyclerView
 
-    class SearchTextChange(val adapter: SearchListAdapter, private val searchList: ArrayList<SoundroidSearchable>) : TextWatcher {
+    lateinit var radioGroup: RadioGroup
+
+    lateinit var autoCompleteTextView: AutoCompleteTextView
+
+    var mode: Int = SearchingService.ALPHABETICAL
+
+    class SearchTextChange(val adapter: SearchListAdapter, private val searchList: ArrayList<SoundroidSearchable>, val fragment: SearchingFragment) : TextWatcher {
 
         override fun afterTextChanged(s: Editable?) {
         }
@@ -43,7 +53,7 @@ class SearchingFragment() : Fragment(), View.OnClickListener {
             searchList.clear()
 
             if ( s!= null && s.length > 0 ) {
-                val searchResult = SearchingService.search(s.toString())
+                val searchResult = SearchingService.search(s.toString(), fragment.mode)
                 searchList.addAll(searchResult)
             }
             adapter.notifyDataSetChanged()
@@ -54,13 +64,34 @@ class SearchingFragment() : Fragment(), View.OnClickListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.fragment_searching, container, false)
-        val autoCompleteTextView = view.findViewById<AutoCompleteTextView>(R.id.fragment_searching_autocomplete)
+        autoCompleteTextView = view.findViewById(R.id.fragment_searching_autocomplete)
 
         recyclerView = view.findViewById(R.id.fragment_searching_recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
-        autoCompleteTextView.addTextChangedListener(SearchTextChange(adapter, searchList))
+        autoCompleteTextView.addTextChangedListener(SearchTextChange(adapter, searchList, this))
+
+        radioGroup = view.findViewById(R.id.fragment_searching_radio_group)
+        radioGroup.setOnCheckedChangeListener { group, checkedId ->
+            val checkedRadioButton = group.findViewById(checkedId) as RadioButton
+            val isChecked = checkedRadioButton.isChecked
+
+            if (isChecked) {
+                searchList.clear()
+
+                if ( checkedId == R.id.fragment_searching_radio_alpha ) {
+                    mode = SearchingService.ALPHABETICAL
+                } else if ( checkedId == R.id.fragment_searching_radio_listening_number ) {
+                    mode = SearchingService.NUMBER
+                } else if ( checkedId == R.id.fragment_searching_radio_note ) {
+                    mode = SearchingService.NOTE
+                }
+
+                searchList.addAll(SearchingService.search(autoCompleteTextView.text.toString(), mode))
+            }
+            adapter.notifyDataSetChanged()
+        }
 
         return view
     }

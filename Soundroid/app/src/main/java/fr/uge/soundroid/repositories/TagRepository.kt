@@ -73,12 +73,14 @@ object TagRepository {
      *
      * @return RealmResults<Tag> the query result.
      */
-    private fun findTagsLike(conditions: Map<String, String>): RealmResults<Tag> {
+    private fun findTagsLike(conditions: Map<String, String>, filter: String = "name", order: Sort = Sort.ASCENDING): RealmResults<Tag> {
         val query = realm.where<Tag>(Tag::class.java)
 
         conditions.forEach {
             query.like(it.key, "*${it.value}*", Case.INSENSITIVE)
         }
+
+        query.sort(filter, order)
 
         return query.findAll()
     }
@@ -124,9 +126,11 @@ object TagRepository {
      *
      * @return The founded Tag list.
      */
-    fun findLike(filters: Map<String, String>): List<Tag> {
+    fun findLike(filters: Map<String, String>, filter: String = "name", order: Sort = Sort.ASCENDING): List<Tag> {
         return findTagsLike(
-            filters
+            filters,
+            filter,
+            order
         ).toList()
     }
 
