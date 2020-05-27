@@ -5,7 +5,6 @@ import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.Required
-import java.io.Serializable
 import java.lang.AssertionError
 
 
@@ -23,14 +22,14 @@ open class Soundtrack(
     @Required
     var duration: Int? = null,
 
-    @Required
-    var listeningNumber: Int? = 0,
-
     var note: Float? = null,
 
     var artist: Artist? = null,
 
-    var album: Album? = null) : RealmObject(), SoundroidSearchable {
+    var album: Album? = null,
+
+    @Required
+    var listeningNumber: Int? = 0) : RealmObject(), SoundroidSearchable {
 
     var tags = RealmList<Tag>()
 
