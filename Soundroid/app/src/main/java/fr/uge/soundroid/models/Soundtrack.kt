@@ -36,9 +36,6 @@ open class Soundtrack(
         return this
     }
 
-    fun removeTag(tag: Tag) {
-        tags.remove(tag)
-    }
     // TODO Delete , use for debug
     fun printTagList() {
         for (tag in tags){
