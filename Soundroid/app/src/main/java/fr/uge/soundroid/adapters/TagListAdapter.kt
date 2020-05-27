@@ -1,5 +1,6 @@
 package fr.uge.soundroid.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,21 +21,16 @@ class TagListAdapter (private val tags: ArrayList<Tag>) :
 
     private lateinit var mRemoveTagListener: RemoveTagListener
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-        View.OnClickListener {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         private val tagText: TextView = itemView.findViewById(R.id.tag_text)
         private val deleteTag : ImageButton = itemView.findViewById(R.id.tag_cross)
 
-        /** Update the state of the song */
+        /** Update the state of the tag */
         fun update(tag: Tag) {
             tagText.text = tag.name
             deleteTag.setOnClickListener{
                 mRemoveTagListener.removeTag(getTag(adapterPosition))
             }
-        }
-
-        override fun onClick(v: View) {
-            //
         }
     }
 
@@ -59,7 +55,7 @@ class TagListAdapter (private val tags: ArrayList<Tag>) :
         mRemoveTagListener = removeTagListener
     }
 
-    public interface RemoveTagListener {
+    interface RemoveTagListener {
         fun removeTag(tag:Tag)
     }
 }

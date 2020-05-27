@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -17,7 +18,7 @@ import fr.uge.soundroid.adapters.TagListAdapter.RemoveTagListener
 import fr.uge.soundroid.models.Soundtrack
 import fr.uge.soundroid.models.Tag
 import fr.uge.soundroid.repositories.SoundtrackRepository
-import kotlin.random.Random
+import io.realm.Realm
 
 
 class TagDialogFragment : DialogFragment(), RemoveTagListener {
@@ -38,6 +39,7 @@ class TagDialogFragment : DialogFragment(), RemoveTagListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
         val view = inflater.inflate(R.layout.fragment_tag_dialog, container, false)
         val soundtrackId = arguments?.getInt("soundtrackId")
         soundtrack = soundtrackId?.let { SoundtrackRepository.findSoundtrackById(it) }
@@ -51,6 +53,7 @@ class TagDialogFragment : DialogFragment(), RemoveTagListener {
         tagListAdapter.setRemoveTagListener(this)
 
         mTagInput = view.findViewById(R.id.tag_dialog_input_text)
+        mTagInput.requestFocus()
         mActionAdd = view.findViewById(R.id.tag_dialog_add_button)
         mActionBack = view.findViewById(R.id.tag_dialog_back_button)
 
@@ -70,7 +73,7 @@ class TagDialogFragment : DialogFragment(), RemoveTagListener {
     }
 
     companion object {
-        fun createTagDialogFragment(soundtrackId : Int) : TagDialogFragment {
+        fun createTagDialogFragment(soundtrackId: Int): TagDialogFragment {
             val tagDialogFragment = TagDialogFragment()
             val bundle = Bundle()
             bundle.putInt("soundtrackId", soundtrackId)
@@ -80,34 +83,32 @@ class TagDialogFragment : DialogFragment(), RemoveTagListener {
     }
 
     private fun addNewTag(tagName: String) {
-        val newTag = Tag(Random.nextInt(), tagName)
-        tags.add(newTag)
-        tagListAdapter.notifyItemInserted(tags.size - 1)
-        SoundtrackRepository.realm.executeTransaction{
+        Realm.getDefaultInstance().executeTransaction { realm: Realm? ->
+            val newTag = Tag().apply { name = tagName; initPrimaryKey() }
+            tags.add(newTag)
+            tagListAdapter.notifyItemInserted(tags.size - 1)
             soundtrack?.addTag(newTag)
-            it.copyToRealmOrUpdate(soundtrack!!)
+            //realm?.copyToRealmOrUpdate(soundtrack!!)
         }
+        soundtrack?.printTagList()
     }
 
     override fun removeTag(tag: Tag) {
-        val positionTag = tags.indexOf(tag)
-        tags.remove(tag)
-        tagListAdapter.notifyItemRemoved(positionTag)
-        tags.remove(tag)
-        SoundtrackRepository.realm.executeTransaction{
+        Realm.getDefaultInstance().executeTransaction { realm: Realm? ->
+            val positionTag = tags.indexOf(tag)
+            tags.remove(tag)
+            tagListAdapter.notifyItemRemoved(positionTag)
             soundtrack?.removeTag(tag)
-            it.copyToRealmOrUpdate(soundtrack!!)
+            //realm?.copyToRealmOrUpdate(soundtrack!!)
         }
-        Toast.makeText(context, "Tag " + tag.name + " has been removed !", Toast.LENGTH_SHORT).show()
+
+        soundtrack?.printTagList()
+        Toast.makeText(context, "Tag " + tag.name + " has been removed !", Toast.LENGTH_SHORT)
+            .show()
     }
 
     private fun tagContains(tagName: String): Boolean {
         return tags.find { tag -> tag.name == tagName } != null
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d("Testy", "DialogStop")
     }
 
 }

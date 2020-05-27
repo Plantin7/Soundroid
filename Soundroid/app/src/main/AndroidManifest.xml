@@ -34,6 +34,8 @@
             </intent-filter>
         </activity>
         <service android:name=".services.MusicPlayerService" />
+        <receiver android:name=".services.MusicNotificationActionPlayerService"/>
+        <service android:name=".services.ClearNotificationMusicPlayerService"/>
     </application>
 
 </manifest>

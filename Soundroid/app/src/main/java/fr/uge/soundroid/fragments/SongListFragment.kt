@@ -48,7 +48,7 @@ class SongListFragment : Fragment(), ItemClickListener {
         // TODO
         realm = Realm.getDefaultInstance()
         realmListener = RealmChangeListener {
-            Log.d("Testy", "UPDATED")
+            Log.d("Testy", "[UPDATED]")
             val newList = ArrayList(SoundtrackRepository.findAll())
             Log.d("Testy", newList.toString())
             songListAdapter = SongListAdapter(newList)
@@ -62,12 +62,8 @@ class SongListFragment : Fragment(), ItemClickListener {
 
     override fun onItemClick(view: View, song: Soundtrack) {
         val intent = Intent(context, PlayerActivity::class.java)
-        Log.d("Testy", song.toString())
         val position = soundtrackModelData.indexOf(song)
         intent.putExtra("soundtrackId", song.id).putExtra("position", position)
         startActivity(intent)
-        if(song.note == null){
-            Log.d("Testy", "Aucune note")
-        }
     }
 }

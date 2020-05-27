@@ -106,7 +106,7 @@
                 android:textColor="@android:color/white"
                 android:text="4:30" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/player_pause_button"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -116,7 +116,7 @@
                 android:focusable="true"
                 android:background="@drawable/ic_play_arrow_white_50dp" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/player_previous_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
@@ -128,7 +128,7 @@
                 android:layout_marginRight="30dp"
                 android:layout_marginEnd="30dp" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/player_next_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
@@ -140,7 +140,7 @@
                 android:layout_marginStart="30dp"
                 android:background="@drawable/ic_skip_next_white_50dp"/>
 
-            <Button
+            <ImageButton
                 android:id="@+id/player_tag_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"

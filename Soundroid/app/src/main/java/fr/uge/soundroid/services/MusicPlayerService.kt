@@ -5,7 +5,9 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Binder
+import android.os.HandlerThread
 import android.os.IBinder
+import android.os.Process
 import android.util.Log
 import android.widget.Toast
 
@@ -63,6 +65,7 @@ class MusicPlayerService : Service() {
         super.onDestroy()
         mediaPlayer!!.stop()
         mediaPlayer!!.release()
+        Log.d("Testy", "Destroyed")
     }
 
     fun getCurrentPosition():Int {
