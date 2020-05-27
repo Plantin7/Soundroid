@@ -1,7 +1,6 @@
 package fr.uge.soundroid.activities.main
 
 import android.content.Context
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -9,8 +8,6 @@ import fr.uge.soundroid.R
 import fr.uge.soundroid.fragments.AlbumListFragment
 import fr.uge.soundroid.fragments.PlaylistListFragment
 import fr.uge.soundroid.fragments.SongListFragment
-import fr.uge.soundroid.models.Album
-import fr.uge.soundroid.models.Song
 
 
 private val TAB_TITLES = arrayOf(

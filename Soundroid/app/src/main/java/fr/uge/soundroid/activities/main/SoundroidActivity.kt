@@ -61,9 +61,18 @@ class SoundroidActivity : RequiringPermissionActivity() {
                 ).show()
             },
             Runnable {
+                val currentSoundtrackList = SoundtrackRepository.findAll()
                 val songModelData = getSoundtracks()
-                SoundtrackRepository.saveSoundtrackList(songModelData)
-
+                val diffList = ArrayList<Soundtrack>()
+                for(songModel in songModelData) {
+                    if(currentSoundtrackList.find {it.hashCode() == songModel.hashCode()} == null) {
+                        diffList.add(songModel)
+                    }
+                }
+                Log.d("Testy", diffList.toString())
+                SoundtrackRepository.saveSoundtrackList(diffList)
+                // TODO Remove removed soundtrack
+                
                 SoundtrackRepository.realm.executeTransaction {
                     for ( soundtrack in SoundtrackRepository.findAll() ) {
                         val album = soundtrack.album ?: continue

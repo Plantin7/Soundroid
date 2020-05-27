@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:padding="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Dialog Tags"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textColor="@color/colorBlack"
+            android:id="@+id/header"/>
+        
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tag_dialog_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_below="@id/header"/>
+
+        <EditText
+            android:id="@+id/tag_dialog_input_text"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/header"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textSize="14sp"
+            android:textColor="@color/colorGrey"
+            android:hint="Enter your tag (10 characters max)"
+            android:layout_above="@id/tag_dialog_back_button"
+            android:layout_alignTop="@id/tag_dialog_recyclerview"
+            android:layout_marginBottom="10dp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/tag_dialog_add_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="25dp"
+                android:textSize="15sp"
+                android:textColor="@color/bt_accent"/>
+
+            <Button
+                android:id="@+id/tag_dialog_back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="back"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="25dp"
+                android:textSize="15sp"
+                android:textColor="@color/bt_accent"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

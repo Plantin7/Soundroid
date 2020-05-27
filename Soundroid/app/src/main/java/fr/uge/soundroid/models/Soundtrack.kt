@@ -1,5 +1,6 @@
 package fr.uge.soundroid.models
 
+import android.util.Log
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
@@ -33,6 +34,16 @@ open class Soundtrack(
     fun addTag(tag: Tag): Soundtrack {
         tags.add(tag)
         return this
+    }
+
+    fun removeTag(tag: Tag) {
+        tags.remove(tag)
+    }
+    // TODO Delete , use for debug
+    fun printTagList() {
+        for (tag in tags){
+            Log.d("Testy", "[DEBUG] " + tag.name!!)
+        }
     }
 
     fun addTagList(list: List<Tag>): Soundtrack {
@@ -69,7 +80,7 @@ open class Soundtrack(
         if (title != other.title) return false
         if (path != other.path) return false
         if (duration != other.duration) return false
-        if ( note != other.note ) return false
+        if (note != other.note ) return false
         if (artist != other.artist) return false
         if (album != other.album) return false
 

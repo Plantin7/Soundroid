@@ -72,7 +72,6 @@ open class Album (
         if (name != other.name) return false
         if (albumPicture != other.albumPicture) return false
         if (artist != other.artist) return false
-        //if (soundtracks != other.soundtracks) return false
 
         return true
     }
