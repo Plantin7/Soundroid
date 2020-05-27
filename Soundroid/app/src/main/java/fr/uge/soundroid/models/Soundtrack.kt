@@ -23,6 +23,9 @@ open class Soundtrack(
     @Required
     var duration: Int? = null,
 
+    @Required
+    var listeningNumber: Int? = 0,
+
     var note: Float? = null,
 
     var artist: Artist? = null,
