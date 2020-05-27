@@ -22,6 +22,7 @@ import fr.uge.soundroid.services.MusicPlayerService
 import fr.uge.soundroid.services.ClearNotificationMusicPlayerService
 import kotlinx.android.synthetic.main.activity_player.*
 import java.util.concurrent.TimeUnit
+import kotlin.random.Random
 
 
 class PlayerActivity : AppCompatActivity(), Playable {
@@ -34,6 +35,7 @@ class PlayerActivity : AppCompatActivity(), Playable {
     private lateinit var musicPlayerService: MusicPlayerService
     private var counter = 0 // /!\ this counter is for changing music when the seek bar is finished
     var mBound = false
+    private var isRandom = false
 
     private var notificationManager: NotificationManager? = null
 
@@ -133,6 +135,16 @@ class PlayerActivity : AppCompatActivity(), Playable {
             if (mBound) {
                 val dialog = TagDialogFragment.createTagDialogFragment(soundtrackId)
                 dialog.show(supportFragmentManager, "TagDialog")
+            }
+        }
+        player_random_button.setOnClickListener{
+            if(!isRandom) {
+                isRandom = true
+                player_random_button.setBackgroundResource(R.drawable.ic_random__soundtrack_selected_50dp)
+            }
+            else {
+                isRandom = false
+                player_random_button.setBackgroundResource(R.drawable.ic_random__soundtrack_50dp)
             }
         }
     }
@@ -250,7 +262,8 @@ class PlayerActivity : AppCompatActivity(), Playable {
     }
 
     override fun onPreviousSoundtrack() {
-        currentPosition = getPreviousPosition(currentPosition)
+        if(!isRandom) currentPosition = getPreviousPosition(currentPosition)
+        else generateRandomSoundtrack()
         val tmpSoundtrack = soundtrackList[currentPosition]
         soundtrackId = tmpSoundtrack.id!!
         soundtrack = tmpSoundtrack
@@ -282,7 +295,9 @@ class PlayerActivity : AppCompatActivity(), Playable {
     }
 
     override fun onNextSoundtrack() {
-        currentPosition = getNextPosition(currentPosition)
+        if(!isRandom) currentPosition = getNextPosition(currentPosition)
+        else generateRandomSoundtrack()
+
         val tmpSoundtrack = soundtrackList[currentPosition]
         soundtrackId = tmpSoundtrack.id!!
         soundtrack = tmpSoundtrack
@@ -305,5 +320,10 @@ class PlayerActivity : AppCompatActivity(), Playable {
             return 0
         }
         return position + 1
+    }
+
+    private fun generateRandomSoundtrack() {
+        val randomPosition = Random.nextInt(soundtrackList.size)
+        currentPosition = randomPosition
     }
 }
