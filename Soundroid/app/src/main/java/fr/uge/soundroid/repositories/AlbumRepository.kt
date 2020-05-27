@@ -5,6 +5,7 @@ import fr.uge.soundroid.models.Album
 import io.realm.Case
 import io.realm.Realm
 import io.realm.RealmResults
+import io.realm.Sort
 
 object AlbumRepository {
     
@@ -45,12 +46,22 @@ object AlbumRepository {
      *
      * @return RealmResults<Album> the query result.
      */
-    private fun findAlbums(conditions: Map<String, String>): RealmResults<Album> {
+    private fun findAlbums(conditions: Map<String, String>, sorted: String = "name", order: Boolean = true): RealmResults<Album> {
         val query = realm.where<Album>(Album::class.java)
 
         conditions.forEach {
             query.equalTo(it.key, it.value)
         }
+
+        val sorting: Sort
+
+        if ( order ) {
+            sorting = Sort.ASCENDING
+        } else {
+            sorting = Sort.DESCENDING
+        }
+
+        query.sort(sorted, sorting)
 
         return query.findAll()
     }

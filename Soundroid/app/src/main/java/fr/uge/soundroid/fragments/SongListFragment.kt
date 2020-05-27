@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.*
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +16,7 @@ import fr.uge.soundroid.R
 import fr.uge.soundroid.activities.others.PlayerActivity
 import fr.uge.soundroid.adapters.SongListAdapter
 import fr.uge.soundroid.adapters.SongListAdapter.ItemClickListener
+import fr.uge.soundroid.listener.DefaultPopupSoundtrackMenuListener
 import fr.uge.soundroid.models.Soundtrack
 import fr.uge.soundroid.repositories.SoundtrackRepository
 import io.realm.Realm
@@ -21,18 +24,21 @@ import io.realm.RealmChangeListener
 
 
 class SongListFragment : Fragment(), ItemClickListener {
+    private val soundtrackList = ArrayList<Soundtrack>()
+    private val songListAdapter = SongListAdapter(soundtrackList)
     private lateinit var recyclerView: RecyclerView
-    private lateinit var songListAdapter: SongListAdapter
     private lateinit var realm: Realm
     private lateinit var realmListener:RealmChangeListener<Realm>
-    private lateinit var soundtrackModelData : ArrayList<Soundtrack>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_song_list, container, false)
-        soundtrackModelData = ArrayList(SoundtrackRepository.findAll())
         recyclerView = rootView.findViewById(R.id.recyclerView) as RecyclerView
         recyclerView.setHasFixedSize(true)
-        songListAdapter = SongListAdapter(soundtrackModelData)
+
+        soundtrackList.clear()
+        soundtrackList.addAll(SoundtrackRepository.findAll())
+        songListAdapter.notifyDataSetChanged()
+
         recyclerView.adapter = songListAdapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
         songListAdapter.setClickListener(this)
@@ -48,12 +54,9 @@ class SongListFragment : Fragment(), ItemClickListener {
         // TODO
         realm = Realm.getDefaultInstance()
         realmListener = RealmChangeListener {
-            Log.d("Testy", "[UPDATED]")
-            val newList = ArrayList(SoundtrackRepository.findAll())
-            Log.d("Testy", newList.toString())
-            songListAdapter = SongListAdapter(newList)
-            recyclerView.adapter = songListAdapter
-            songListAdapter.setClickListener(this)
+            soundtrackList.clear()
+            soundtrackList.addAll(SoundtrackRepository.findAll())
+            songListAdapter.notifyDataSetChanged()
         }
         realm.addChangeListener(realmListener)
 
@@ -62,8 +65,21 @@ class SongListFragment : Fragment(), ItemClickListener {
 
     override fun onItemClick(view: View, song: Soundtrack) {
         val intent = Intent(context, PlayerActivity::class.java)
-        val position = soundtrackModelData.indexOf(song)
+        val position = soundtrackList.indexOf(song)
         intent.putExtra("soundtrackId", song.id).putExtra("position", position)
         startActivity(intent)
+    }
+
+    override fun onMoreClick(view: View) {
+        if ( view.tag == null ) return
+
+        val index: Int = view.tag as Int
+        val soundtrack = soundtrackList[index]
+
+        val popupMenu = PopupMenu(context, view.findViewById(R.id.item_song_more))
+        popupMenu.inflate(R.menu.popup_soundtrack_more)
+        if ( context == null ) return
+        popupMenu.setOnMenuItemClickListener(DefaultPopupSoundtrackMenuListener(soundtrack, soundtrackList, index, context!!, parentFragmentManager))
+        popupMenu.show()
     }
 }

@@ -105,4 +105,21 @@ open class Album (
         }
         return map[id]
     }
+
+    fun exportToJson(): String {
+        var s = "{" +
+                "\"id\": $id," +
+                "\"name\": \"$name\"," +
+                "\"albumPicture\": \"$albumPicture\"," +
+                "\"artist\": \"${artist?.id}\"," +
+                "\"soundtracks\": ["
+
+        for ( soundtrack in soundtracks ) {
+            s += "{\"id\": ${soundtrack.id}},"
+        }
+
+        s += "]}"
+
+        return s
+    }
 }

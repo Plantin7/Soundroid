@@ -66,4 +66,11 @@ open class Artist(
             throw AssertionError()
         }
     }
+
+    fun exportToJson(): String {
+        return "{" +
+                "\"id\": $id," +
+                "\"name\": \"$name\"" +
+                "}"
+    }
 }

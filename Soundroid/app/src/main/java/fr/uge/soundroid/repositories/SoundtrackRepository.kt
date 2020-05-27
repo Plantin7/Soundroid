@@ -5,6 +5,7 @@ import fr.uge.soundroid.models.Soundtrack
 import io.realm.Case
 import io.realm.Realm
 import io.realm.RealmResults
+import io.realm.Sort
 
 
 object SoundtrackRepository {
@@ -23,7 +24,6 @@ object SoundtrackRepository {
      */
     fun saveSoundtrackList(elements: List<Soundtrack>) {
         realm.beginTransaction()
-        //realm.deleteAll() //TODO
         for ( element in elements ) {
             realm.copyToRealmOrUpdate(element)
         }
@@ -47,12 +47,22 @@ object SoundtrackRepository {
      *
      * @return RealmResults<Soundtrack> the query result.
      */
-    private fun findSoundtracks(conditions: Map<String, String>): RealmResults<Soundtrack> {
+    private fun findSoundtracks(conditions: Map<String, String>, sorted: String = "title", order: Boolean = true): RealmResults<Soundtrack> {
         val query = realm.where<Soundtrack>(Soundtrack::class.java)
 
         conditions.forEach {
             query.equalTo(it.key, it.value)
         }
+
+        val sorting: Sort
+
+        if ( order ) {
+            sorting = Sort.ASCENDING
+        } else {
+            sorting = Sort.DESCENDING
+        }
+
+        query.sort(sorted, sorting)
 
         return query.findAll()
     }

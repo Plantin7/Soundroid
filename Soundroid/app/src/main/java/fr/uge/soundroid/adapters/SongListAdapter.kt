@@ -7,11 +7,14 @@ import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.soundroid.R
 import fr.uge.soundroid.models.Soundtrack
@@ -34,10 +37,15 @@ class SongListAdapter(private val songs: ArrayList<Soundtrack>) :
         private val albumPicture: ImageView = itemView.findViewById(R.id.album_picture)
         private val titleSong: TextView = itemView.findViewById(R.id.title_song)
         private val artisteSong: TextView = itemView.findViewById(R.id.artiste_song)
+        private val moreButton: ImageView = itemView.findViewById(R.id.item_song_more)
+        val cardView: CardView = itemView.findViewById(R.id.item_song_card_view)
 
         /** Init the clickListener*/
         init {
             itemView.setOnClickListener(this)
+            moreButton.setOnClickListener {
+                mClickListener.onMoreClick(itemView)
+            }
         }
 
         /** Update the state of the song */
@@ -72,6 +80,7 @@ class SongListAdapter(private val songs: ArrayList<Soundtrack>) :
     /** Binding soundtrack with the viewHolder */
     override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) {
         viewHolder.update(songs[i])
+        viewHolder.cardView.tag = i
     }
 
     /** get the number of cards */
@@ -87,6 +96,7 @@ class SongListAdapter(private val songs: ArrayList<Soundtrack>) :
     /** parent activity will implement this method to respond to click events */
     interface ItemClickListener {
         fun onItemClick(view: View, song: Soundtrack)
+        fun onMoreClick(view: View)
     }
 
     /**-------------- Unused ------------------------------------------*/

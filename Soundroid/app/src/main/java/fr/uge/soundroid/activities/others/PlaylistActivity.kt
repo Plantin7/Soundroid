@@ -1,37 +1,37 @@
 package fr.uge.soundroid.activities.others
 
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
 import fr.uge.soundroid.R
-import fr.uge.soundroid.fragments.AlbumSoundtrackListFragment
-import fr.uge.soundroid.repositories.AlbumRepository
+import fr.uge.soundroid.fragments.PlaylistSoundtrackListFragment
+import fr.uge.soundroid.repositories.PlaylistRepository
 
-
-class AlbumActivity : AppCompatActivity() {
+class PlaylistActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_album)
+        setContentView(R.layout.activity_playlist)
 
         val actionBar: ActionBar? = supportActionBar
         actionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val albumId = intent.getIntExtra("albumId", 0)
-        if ( albumId == 0 ) {
-            Log.e(AlbumActivity::class.java.name, "The is is the default one !")
+        val playlistId = intent.getIntExtra("playlistId", 0)
+        if ( playlistId == 0 ) {
+            Log.e(PlaylistActivity::class.java.name, "The is is the default one !")
         }
-        val album = AlbumRepository.findAlbumById(albumId)
+
+        val playlist = PlaylistRepository.findPlaylistById(playlistId)
             ?: throw AssertionError("This element needs to exist in the database")
 
-        val fragment = AlbumSoundtrackListFragment(album)
-
+        val fragment = PlaylistSoundtrackListFragment(playlist)
         supportFragmentManager.beginTransaction()
-            .add(R.id.activity_album_container, fragment)
+            .add(R.id.activity_playlist_container, fragment)
             .commit()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -48,4 +48,5 @@ class AlbumActivity : AppCompatActivity() {
 
         return super.onOptionsItemSelected(item)
     }
+
 }

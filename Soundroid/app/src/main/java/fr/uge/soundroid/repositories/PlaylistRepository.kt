@@ -5,6 +5,7 @@ import fr.uge.soundroid.models.Playlist
 import io.realm.Case
 import io.realm.Realm
 import io.realm.RealmResults
+import io.realm.Sort
 
 object PlaylistRepository {
     
@@ -45,12 +46,22 @@ object PlaylistRepository {
      *
      * @return RealmResults<Playlist> the query result.
      */
-    private fun findPlaylists(conditions: Map<String, String>): RealmResults<Playlist> {
+    private fun findPlaylists(conditions: Map<String, String>, sorted: String = "title", order: Boolean = true): RealmResults<Playlist> {
         val query = realm.where<Playlist>(Playlist::class.java)
 
         conditions.forEach {
             query.equalTo(it.key, it.value)
         }
+
+        val sorting: Sort
+
+        if ( order ) {
+            sorting = Sort.ASCENDING
+        } else {
+            sorting = Sort.DESCENDING
+        }
+
+        query.sort(sorted, sorting)
 
         return query.findAll()
     }

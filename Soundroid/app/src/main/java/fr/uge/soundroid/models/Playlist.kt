@@ -53,7 +53,7 @@ open class Playlist(
 
         if (id != other.id) return false
         if (title != other.title) return false
-        if (soundtracks != other.soundtracks) return false
+        //if (soundtracks != other.soundtracks) return false
 
         return true
     }
@@ -69,5 +69,19 @@ open class Playlist(
         } else {
             throw AssertionError()
         }
+    }
+
+    fun exportToJson(): String {
+        var s = "{" +
+                "\"id\": $id," +
+                "\"title\": \"$title\"," +
+                "\"soundtracks\": ["
+
+        for ( soundtrack in soundtracks ) {
+            s += "{\"id\": ${soundtrack.id}},"
+        }
+        s += "]}"
+
+        return s
     }
 }

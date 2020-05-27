@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.soundroid.R
 import fr.uge.soundroid.activities.others.AlbumActivity
@@ -25,6 +24,7 @@ class AlbumListFragment  : Fragment(), View.OnClickListener  {
         val view = inflater.inflate(R.layout.fragment_album_list, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.fragment_album_recycler_view)
 
+        albumList.clear()
         albumList.addAll(AlbumRepository.findAll())
 
         recyclerView.layoutManager = GridLayoutManager(context, 2)

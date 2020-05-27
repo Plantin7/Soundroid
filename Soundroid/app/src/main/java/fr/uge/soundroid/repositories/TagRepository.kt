@@ -5,6 +5,7 @@ import fr.uge.soundroid.models.Tag
 import io.realm.Case
 import io.realm.Realm
 import io.realm.RealmResults
+import io.realm.Sort
 
 object TagRepository {
 
@@ -45,12 +46,22 @@ object TagRepository {
      *
      * @return RealmResults<Tag> the query result.
      */
-    private fun findTags(conditions: Map<String, String>): RealmResults<Tag> {
+    private fun findTags(conditions: Map<String, String>, sorted: String = "name", order: Boolean = true): RealmResults<Tag> {
         val query = realm.where<Tag>(Tag::class.java)
 
         conditions.forEach {
             query.equalTo(it.key, it.value)
         }
+
+        val sorting: Sort
+
+        if ( order ) {
+            sorting = Sort.ASCENDING
+        } else {
+            sorting = Sort.DESCENDING
+        }
+
+        query.sort(sorted, sorting)
 
         return query.findAll()
     }
@@ -175,4 +186,6 @@ object TagRepository {
         query.equalTo("id", id)
         return query.findFirst()
     }
+
+
 }

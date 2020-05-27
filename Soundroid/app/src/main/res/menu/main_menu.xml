@@ -8,4 +8,14 @@
         android:title="Search"
         app:showAsAction="always"/>
 
+    <item
+        android:id="@+id/main_menu_export_database"
+        android:title="Exporter la base de données"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/main_menu_import_database"
+        android:title="Importer la base de données"
+        app:showAsAction="never"/>
+
 </menu>
