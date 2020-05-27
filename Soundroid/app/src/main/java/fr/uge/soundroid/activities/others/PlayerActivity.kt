@@ -14,14 +14,18 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import fr.uge.soundroid.R
 import fr.uge.soundroid.fragments.TagDialogFragment
+import fr.uge.soundroid.models.HistoryEntry
 import fr.uge.soundroid.models.Soundtrack
 import fr.uge.soundroid.notifications.MusicPlayerNotification
+import fr.uge.soundroid.repositories.HistoryEntryRepository
 import fr.uge.soundroid.repositories.SoundtrackRepository
 import fr.uge.soundroid.repositories.SoundtrackRepository.findSoundtrackById
 import fr.uge.soundroid.services.MusicPlayerService
 import fr.uge.soundroid.services.ClearNotificationMusicPlayerService
 import kotlinx.android.synthetic.main.activity_player.*
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 import kotlin.random.Random
 
 
@@ -68,8 +72,10 @@ class PlayerActivity : AppCompatActivity(), Playable {
         soundtrackId = intent.getIntExtra("soundtrackId", 0)
         currentPosition = intent.getIntExtra("position", 0)
         soundtrack = findSoundtrackById(soundtrackId)
+        soundtrack?.listeningNumber?.inc()
         soundtrackList = SoundtrackRepository.findAll()
         updateActivityView(soundtrack)
+        saveHistory(soundtrack)
 
         createChannel()
         registerReceiver(broadcastReceiver, IntentFilter("ACTION_SOUNDTRACK"))
@@ -320,5 +326,24 @@ class PlayerActivity : AppCompatActivity(), Playable {
     private fun generateRandomSoundtrack() {
         val randomPosition = Random.nextInt(soundtrackList.size)
         currentPosition = randomPosition
+    }
+
+    private fun saveHistory(soundtrackToSave: Soundtrack?) {
+        val historyList = ArrayList(HistoryEntryRepository.findAll())
+        val soundtrackIsFounded = historyList.find {
+            it.soundtrack == soundtrackToSave
+        }
+
+        if(soundtrackIsFounded != null) {
+            historyList.remove(soundtrackIsFounded)
+            HistoryEntryRepository.deleteHistoryEntry(soundtrackIsFounded)
+        }
+
+        val historyEntry = HistoryEntry().apply {
+            date = Date()
+            soundtrack = soundtrackToSave
+            initPrimaryKey()
+        }
+        HistoryEntryRepository.saveHistoryEntry(historyEntry)
     }
 }

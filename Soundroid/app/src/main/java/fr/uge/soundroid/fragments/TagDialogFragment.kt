@@ -93,7 +93,6 @@ class TagDialogFragment : DialogFragment(), RemoveTagListener {
 
         tags.add(newTag)
         tagListAdapter.notifyItemInserted(tags.size - 1)
-        soundtrack?.printTagList()
     }
 
     override fun removeTag(tag: Tag) {
@@ -104,7 +103,6 @@ class TagDialogFragment : DialogFragment(), RemoveTagListener {
         }
         tags.remove(tag)
         tagListAdapter.notifyItemRemoved(positionTag)
-        soundtrack?.printTagList()
         Toast.makeText(context, "Tag " + tag.name + " has been removed !", Toast.LENGTH_SHORT)
             .show()
     }

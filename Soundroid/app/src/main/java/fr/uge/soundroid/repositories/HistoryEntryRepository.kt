@@ -46,7 +46,7 @@ object HistoryEntryRepository {
      *
      * @return RealmResults<HistoryEntry> the query result.
      */
-    private fun findHistoryEntries(conditions: Map<String, String>, sorted: String = "title", order: Boolean = true): RealmResults<HistoryEntry> {
+    private fun findHistoryEntries(conditions: Map<String, String>, sorted: String = "date", order: Boolean = false): RealmResults<HistoryEntry> {
         val query = realm.where<HistoryEntry>(HistoryEntry::class.java)
 
         conditions.forEach {

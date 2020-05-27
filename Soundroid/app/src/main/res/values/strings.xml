@@ -5,6 +5,7 @@
     <string name="Albums">Albums</string>
     <string name="Artistes">Artistes</string>
     <string name="Playlists">Playlists</string>
+    <string name="History">History</string>
     <string name="create_playlist_dialog_confirm">Confirmer</string>
     <string name="create_playlist_dialog_cancel">Annuler</string>
     <string name="create_playlist_dialog_message">Quel nom voulez vous donner à la playlist qui contiendra %1$s ?</string>
