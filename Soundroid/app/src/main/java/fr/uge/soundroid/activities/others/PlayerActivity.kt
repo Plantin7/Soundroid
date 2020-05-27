@@ -103,15 +103,6 @@ class PlayerActivity : AppCompatActivity(), Playable {
         /** Seek Bar Progress */
         player_seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if (progress == seekBar?.max) {
-                    stopRefresh()
-                    player_next_button.performClick() // Change music
-                    counter = 0
-                    return
-                }
-                if (progress == seekBar?.max?.minus(1)) {
-                    counter += 1
-                }
                 if (mBound && fromUser) {
                     musicPlayerService.seekTo(progress * 1000)
                 }
@@ -211,7 +202,6 @@ class PlayerActivity : AppCompatActivity(), Playable {
         //unbindService(connection)
         //stopRefresh()
         //mBound = false
-        Log.d("Testy", "Stop")
     }
 
     override fun onDestroy() {
@@ -228,9 +218,14 @@ class PlayerActivity : AppCompatActivity(), Playable {
         if (mBound) {
             updateSeekBar(currentPosition)
         }
+        if ((currentPosition / 1000) == player_seekBar?.max) {
+            stopRefresh()
+            player_next_button.performClick() // Change music
+            counter = 0
+        }
         if ((currentPosition / 1000) == player_seekBar?.max?.minus(1)) {
             counter += 1
-            if (counter == 3) {
+            if (counter == 2) { // because the currentPosition is less seek_bar.max
                 stopRefresh()
                 player_next_button.performClick() // Change music
                 counter = 0

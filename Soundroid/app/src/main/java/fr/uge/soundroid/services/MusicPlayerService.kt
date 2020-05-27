@@ -65,7 +65,6 @@ class MusicPlayerService : Service() {
         super.onDestroy()
         mediaPlayer!!.stop()
         mediaPlayer!!.release()
-        Log.d("Testy", "Destroyed")
     }
 
     fun getCurrentPosition():Int {
