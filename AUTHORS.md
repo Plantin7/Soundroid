@@ -1,5 +1,5 @@
 # AUTHORS
-nom prenom : Pseudonyme Git  
+*nom prenom : Pseudonyme Git  
 
 Agullo Vincent : Plantin7  
 Guillaume Cau : Caucorico  
