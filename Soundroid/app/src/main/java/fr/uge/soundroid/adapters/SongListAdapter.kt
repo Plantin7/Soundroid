@@ -1,38 +1,58 @@
 package fr.uge.soundroid.adapters
 
+import android.graphics.*
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import android.util.Base64
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.annotation.RequiresApi
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.soundroid.R
-import fr.uge.soundroid.models.Song
+import fr.uge.soundroid.models.Soundtrack
+import java.io.ByteArrayOutputStream
+import java.io.FileNotFoundException
+
 
 /**
  * This class implement an RecyclerView to display song list and to know which song the user pressed
  * @author Vincent Agullo
  */
 
-class SongListAdapter(private val songs:List<Song>) : RecyclerView.Adapter<SongListAdapter.ViewHolder>() {
+class SongListAdapter(private val songs: ArrayList<Soundtrack>) :
+    RecyclerView.Adapter<SongListAdapter.ViewHolder>() {
 
     private lateinit var mClickListener: ItemClickListener
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        private val albumPicture:ImageView = itemView.findViewById(R.id.album_picture)
-        private val titleSong:TextView = itemView.findViewById(R.id.title_song)
-        private val artisteSong:TextView = itemView.findViewById(R.id.artiste_song)
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        View.OnClickListener {
+        private val albumPicture: ImageView = itemView.findViewById(R.id.album_picture)
+        private val titleSong: TextView = itemView.findViewById(R.id.title_song)
+        private val artisteSong: TextView = itemView.findViewById(R.id.artiste_song)
+        private val moreButton: ImageView = itemView.findViewById(R.id.item_song_more)
+        val cardView: CardView = itemView.findViewById(R.id.item_song_card_view)
 
         /** Init the clickListener*/
         init {
             itemView.setOnClickListener(this)
+            moreButton.setOnClickListener {
+                mClickListener.onMoreClick(itemView)
+            }
         }
 
         /** Update the state of the song */
-        fun update(song: Song) {
-            //albumPicture.setImageBitmap(song.getBitmap(albumPicture.context)) TODO
+        fun update(song: Soundtrack) {
+            albumPicture.setImageBitmap(song.album?.getBitmap(itemView.context))
             titleSong.text = song.title
-            artisteSong.text = song.artiste
+            artisteSong.text = song.artist?.name
         }
 
         /** A song has been clicked */
@@ -42,18 +62,25 @@ class SongListAdapter(private val songs:List<Song>) : RecyclerView.Adapter<SongL
     }
 
     /** */
-    private fun getMusic(position:Int): Song {
+    private fun getMusic(position: Int): Soundtrack {
         return songs[position]
     }
 
     /** Create a viewHolder*/
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.item_song, viewGroup,false))
+        return ViewHolder(
+            LayoutInflater.from(viewGroup.context).inflate(
+                R.layout.item_song,
+                viewGroup,
+                false
+            )
+        )
     }
 
-    /** Binding card with the viewHolder */
+    /** Binding soundtrack with the viewHolder */
     override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) {
         viewHolder.update(songs[i])
+        viewHolder.cardView.tag = i
     }
 
     /** get the number of cards */
@@ -61,8 +88,37 @@ class SongListAdapter(private val songs:List<Song>) : RecyclerView.Adapter<SongL
         return songs.size
     }
 
+    /** allows clicks events to be caught */
+    fun setClickListener(itemClickListener: ItemClickListener) {
+        mClickListener = itemClickListener
+    }
+
     /** parent activity will implement this method to respond to click events */
     interface ItemClickListener {
-        fun onItemClick(view: View, song:Song)
+        fun onItemClick(view: View, song: Soundtrack)
+        fun onMoreClick(view: View)
     }
+
+    /**-------------- Unused ------------------------------------------*/
+    /**
+     * @param encodedString
+     * @return bitmap (from given string)
+     */
+    fun stringToBitMap(encodedString: String?): Bitmap? {
+        return try {
+            val encodeByte: ByteArray = Base64.decode(encodedString, Base64.DEFAULT)
+            BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size)
+        } catch (e: Exception) {
+            e.message
+            null
+        }
+    }
+
+    fun bitMapToString(bitmap: Bitmap): String {
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
+        val b: ByteArray = baos.toByteArray()
+        return Base64.encodeToString(b, Base64.DEFAULT)
+    }
+
 }
