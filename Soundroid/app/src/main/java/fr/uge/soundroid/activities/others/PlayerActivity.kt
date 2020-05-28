@@ -1,5 +1,6 @@
 package fr.uge.soundroid.activities.others
 
+import SwipeTouchListener
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.*
@@ -7,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
-import android.util.Log
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.annotation.RequiresApi
@@ -20,8 +20,8 @@ import fr.uge.soundroid.notifications.MusicPlayerNotification
 import fr.uge.soundroid.repositories.HistoryEntryRepository
 import fr.uge.soundroid.repositories.SoundtrackRepository
 import fr.uge.soundroid.repositories.SoundtrackRepository.findSoundtrackById
-import fr.uge.soundroid.services.MusicPlayerService
 import fr.uge.soundroid.services.ClearNotificationMusicPlayerService
+import fr.uge.soundroid.services.MusicPlayerService
 import kotlinx.android.synthetic.main.activity_player.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -144,6 +144,17 @@ class PlayerActivity : AppCompatActivity(), Playable {
                 player_random_button.setBackgroundResource(R.drawable.ic_random__soundtrack_50dp)
             }
         }
+
+        player_album_picture.setOnTouchListener (
+            object : SwipeTouchListener(this@PlayerActivity) {
+                override fun onSwipeLeft() {
+                    onPreviousSoundtrack()
+                }
+                override fun onSwipeRight() {
+                    onNextSoundtrack()
+                }
+            }
+        )
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
