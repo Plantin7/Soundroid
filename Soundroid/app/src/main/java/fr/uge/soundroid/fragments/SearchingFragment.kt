@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +42,8 @@ class SearchingFragment() : Fragment(), View.OnClickListener, CreateResearchPlay
 
     var mode: Int = SearchingService.ALPHABETICAL
 
+    var minimalNote: Float = 0.0F
+
     class SearchTextChange(val adapter: SearchListAdapter, private val searchList: ArrayList<SoundroidSearchable>, val fragment: SearchingFragment) : TextWatcher {
 
         override fun afterTextChanged(s: Editable?) {
@@ -54,7 +57,7 @@ class SearchingFragment() : Fragment(), View.OnClickListener, CreateResearchPlay
             searchList.clear()
 
             if ( s!= null && s.length > 0 ) {
-                val searchResult = SearchingService.search(s.toString(), fragment.mode)
+                val searchResult = SearchingService.search(s.toString(), fragment.mode, fragment.minimalNote)
                 searchList.addAll(searchResult)
             }
             adapter.notifyDataSetChanged()
@@ -89,7 +92,7 @@ class SearchingFragment() : Fragment(), View.OnClickListener, CreateResearchPlay
                     mode = SearchingService.NOTE
                 }
 
-                searchList.addAll(SearchingService.search(autoCompleteTextView.text.toString(), mode))
+                searchList.addAll(SearchingService.search(autoCompleteTextView.text.toString(), mode, minimalNote))
             }
             adapter.notifyDataSetChanged()
         }
@@ -116,6 +119,14 @@ class SearchingFragment() : Fragment(), View.OnClickListener, CreateResearchPlay
                 }
             }
             fragment.show(parentFragmentManager, "confirmCreate")
+        }
+
+        val ratingBar = view.findViewById<RatingBar>(R.id.fragment_searching_rating_bar)
+        ratingBar.setOnRatingBarChangeListener { ratingBar, rating, fromUser ->
+            searchList.clear()
+            minimalNote = rating
+            searchList.addAll(SearchingService.search(autoCompleteTextView.text.toString(), mode, minimalNote))
+            adapter.notifyDataSetChanged()
         }
 
         return view

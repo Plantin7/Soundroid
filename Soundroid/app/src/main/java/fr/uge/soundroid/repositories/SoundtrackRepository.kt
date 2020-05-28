@@ -74,11 +74,16 @@ object SoundtrackRepository {
      *
      * @return RealmResults<Soundtrack> the query result.
      */
-    private fun findSoundtracksLike(conditions: Map<String, String>, filter: String = "title", order: Sort = Sort.ASCENDING): RealmResults<Soundtrack> {
+    private fun findSoundtracksLike(conditions: Map<String, String>, filter: String = "title", order: Sort = Sort.ASCENDING, minimalNote: Float = 0.0F): RealmResults<Soundtrack> {
         val query = realm.where<Soundtrack>(Soundtrack::class.java)
 
         conditions.forEach {
             query.like(it.key, "*${it.value}*", Case.INSENSITIVE)
+        }
+
+        /* Prevent note = null */
+        if ( minimalNote > 0.0F ) {
+            query.greaterThanOrEqualTo("note", minimalNote/5.0F)
         }
 
         query.sort(filter, order)
@@ -127,11 +132,12 @@ object SoundtrackRepository {
      *
      * @return The founded Soundtrack list.
      */
-    fun findLike(filters: Map<String, String>, filter: String = "title", order: Sort = Sort.ASCENDING): List<Soundtrack> {
+    fun findLike(filters: Map<String, String>, filter: String = "title", order: Sort = Sort.ASCENDING, minimalNote: Float = 0.0F): List<Soundtrack> {
         return findSoundtracksLike(
             filters,
             filter,
-            order
+            order,
+            minimalNote
         ).toList()
     }
 

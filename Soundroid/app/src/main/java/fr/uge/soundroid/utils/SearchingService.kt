@@ -15,7 +15,7 @@ object SearchingService {
 
     val NUMBER: Int = 2
 
-    fun search(filter: String, filterType: Int = 0): List<SoundroidSearchable> {
+    fun search(filter: String, filterType: Int = 0, minimalNote: Float = 0.0F): List<SoundroidSearchable> {
         val results = ArrayList<SoundroidSearchable>()
         var f = "title"
         var o = Sort.ASCENDING
@@ -30,11 +30,11 @@ object SearchingService {
 
         results.addAll(SoundtrackRepository.findLike(mapOf(
             "title" to filter
-        ), f, o))
+        ), f, o, minimalNote))
 
         results.addAll(SoundtrackRepository.findLike(mapOf(
             "tags.name" to filter
-        ), f, o))
+        ), f, o, minimalNote))
 
         if ( filterType == ALPHABETICAL ) {
             results.addAll(AlbumRepository.findLike(mapOf(
