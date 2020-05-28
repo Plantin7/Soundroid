@@ -46,7 +46,6 @@ class PlayerActivity : AppCompatActivity(), Playable {
     private var isRandom = false
 
     private var notificationManager: NotificationManager? = null
-    private var batteryLevel:Int = -1
 
     /** Defines callbacks for service binding, passed to bindService()  */
     private val connection = object : ServiceConnection {
@@ -191,13 +190,20 @@ class PlayerActivity : AppCompatActivity(), Playable {
 
     private val batteryBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(arg0: Context?, intent: Intent) {
-            batteryLevel = intent.getIntExtra("level", 0)
+            val batteryLevel = intent.getIntExtra("level", 0)
             if(batteryLevel < 10) {
-                unbindService(connection)
-                stopRefresh()
-                mBound = false
-                notificationManager?.cancelAll()
-                unregisterReceiver(broadcastReceiver)
+                if(mBound){
+                    musicPlayerService.pauseSong()
+                    player_pause_button.setBackgroundResource(R.drawable.ic_play_arrow_white_50dp)
+                    stopRefresh()
+                }
+            }
+            else {
+                if(mBound) {
+                    musicPlayerService.playSong()
+                    player_pause_button.setBackgroundResource(R.drawable.ic_pause_white_50dp)
+                    updateSeekBarRunnable.run()
+                }
             }
         }
     }
