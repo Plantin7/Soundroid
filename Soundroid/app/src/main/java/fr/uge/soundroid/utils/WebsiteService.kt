@@ -20,7 +20,7 @@ object WebsiteService {
 
     lateinit var requestQueue: RequestQueue
 
-    var post: Boolean = true
+    var post: Boolean = false
 
 
     fun initQueue(context: Context) {
