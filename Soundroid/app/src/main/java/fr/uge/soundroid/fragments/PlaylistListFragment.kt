@@ -5,10 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fr.uge.soundroid.R
 import fr.uge.soundroid.activities.others.PlaylistActivity
 import fr.uge.soundroid.adapters.PlaylistListAdapter
@@ -44,6 +47,30 @@ class PlaylistListFragment : Fragment(), PlaylistListAdapter.ItemClickListener {
             adapter.notifyDataSetChanged()
         }
         realm.addChangeListener(realmListener)
+
+        val floatingActionButton = view.findViewById<FloatingActionButton>(R.id.fragment_playlist_list_add)
+        floatingActionButton.setOnClickListener {
+            val fragment = DirectCreatePlaylistDialogFragment()
+            fragment.listener = object : DirectCreatePlaylistDialogFragment.ConfirmCreateListener {
+                override fun onDialogConfirmCreateClick() {
+                    val editable = fragment.dialog?.findViewById<EditText>(R.id.dialog_direct_create_playlist_edit_text)?.text
+                        ?: return
+                    val title = editable.toString()
+                    val playlist = Playlist(null, title)
+
+                    val existing = PlaylistRepository.findPlaylistById(playlist.hashCode())
+                    if ( existing == null ) {
+                        playlist.initPrimaryKey()
+                        PlaylistRepository.savePlaylist(playlist)
+                        Toast.makeText(context, R.string.create_playlist_toast_success, Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, R.string.create_playlist_toast_already_exist_error, Toast.LENGTH_LONG).show()
+                    }
+
+                }
+            }
+            fragment.show(parentFragmentManager, "confirmCreate")
+        }
 
         return view
     }
