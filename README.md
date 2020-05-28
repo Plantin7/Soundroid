@@ -19,3 +19,9 @@ Voici les différentes fonctionnamitées implémentées :
 - Historique de lecture permettant de visualiser les dernières musiques écoutées
 - Partage musical en faisant une requête HTTP vers un site web  
 - Recherche de musique multi critérié : artiste, album, titre, note, lecture de music, etiquettes etc 
+- Notification de la piste en cours.  
+- Possibilité de revenir sur le lecteur depuis une notification
+- Possiblité de stopper / lancer une musique depuis la notification
+- Possibilité de changer une musique depuis une notification
+- Lecture musical d'un album, d'une playlist, toutes les musiques
+- Possibilité de lire un album, d'une playlist, toutes les musiques de manière aléatoire.
