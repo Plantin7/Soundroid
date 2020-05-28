@@ -20,6 +20,7 @@ import fr.uge.soundroid.repositories.SoundtrackRepository
 import fr.uge.soundroid.repositories.SoundtrackRepository.findSoundtrackById
 import fr.uge.soundroid.services.MusicPlayerService
 import fr.uge.soundroid.services.ClearNotificationMusicPlayerService
+import fr.uge.soundroid.utils.WebsiteService
 import kotlinx.android.synthetic.main.activity_player.*
 import java.util.concurrent.TimeUnit
 
@@ -68,6 +69,12 @@ class PlayerActivity : AppCompatActivity(), Playable {
         soundtrack = findSoundtrackById(soundtrackId)
         soundtrackList = SoundtrackRepository.findAll()
         updateActivityView(soundtrack)
+
+        /* Send the HTTPRequest */
+        val s = soundtrack
+        if ( s != null ) {
+            WebsiteService.sendSoundtrackInfos(s)
+        }
 
         createChannel()
         registerReceiver(broadcastReceiver, IntentFilter("ACTION_SOUNDTRACK"))

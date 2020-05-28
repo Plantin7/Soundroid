@@ -11,19 +11,24 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import fr.uge.soundroid.R
 import fr.uge.soundroid.activities.others.SearchActivity
+import fr.uge.soundroid.fragments.ChangeUrlDialogFragment
+import fr.uge.soundroid.fragments.ConfirmPlaylistDeleteDialogFragment
 import fr.uge.soundroid.models.Album
 import fr.uge.soundroid.models.Artist
 import fr.uge.soundroid.models.Soundtrack
 import fr.uge.soundroid.repositories.AlbumRepository
+import fr.uge.soundroid.repositories.PlaylistRepository
 import fr.uge.soundroid.repositories.SoundtrackRepository
 import fr.uge.soundroid.utils.DatabaseService
 import fr.uge.soundroid.utils.RequiringPermissionActivity
+import fr.uge.soundroid.utils.WebsiteService
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 
@@ -34,14 +39,17 @@ import java.nio.charset.StandardCharsets
  */
 class SoundroidActivity : RequiringPermissionActivity() {
 
-    val EXPORT_INTENT_CODE: Int = 1
+    private val EXPORT_INTENT_CODE: Int = 1
 
-    val IMPORT_INTENT_CODE: Int = 2
+    private val IMPORT_INTENT_CODE: Int = 2
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_soundroid)
+
+        // Init the queue for the HTTP requests (Partage musical)
+        WebsiteService.initQueue(this)
 
         val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
         val viewPager: ViewPager = findViewById(R.id.view_pager)
@@ -185,6 +193,18 @@ class SoundroidActivity : RequiringPermissionActivity() {
                 chooseFile.type = "*/*"
                 chooseFile = Intent.createChooser(chooseFile, "Select the file")
                 startActivityForResult(chooseFile, IMPORT_INTENT_CODE)
+            }
+            R.id.main_menu_change_website -> {
+                val fragment = ChangeUrlDialogFragment(WebsiteService.url)
+                fragment.listener = object : ChangeUrlDialogFragment.ConfirmChangeListener {
+                    override fun onDialogConfirmChangeClick() {
+                        val editable = fragment.dialog?.findViewById<EditText>(R.id.fragment_dialog_change_website_edit_text)?.text
+                            ?: return
+                        WebsiteService.url = editable.toString()
+                    }
+                }
+
+                fragment.show(supportFragmentManager, "confirmDelete")
             }
         }
 

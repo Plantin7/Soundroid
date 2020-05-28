@@ -18,4 +18,9 @@
         android:title="Importer la base de données"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/main_menu_change_website"
+        android:title="Changer les paramètres de partage musical"
+        app:showAsAction="never"/>
+
 </menu>

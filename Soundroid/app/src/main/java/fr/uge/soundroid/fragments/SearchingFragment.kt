@@ -22,7 +22,6 @@ import fr.uge.soundroid.models.Playlist
 import fr.uge.soundroid.models.SoundroidSearchable
 import fr.uge.soundroid.models.Soundtrack
 import fr.uge.soundroid.repositories.PlaylistRepository
-import fr.uge.soundroid.repositories.SoundtrackRepository
 import fr.uge.soundroid.utils.SearchingService
 
 
