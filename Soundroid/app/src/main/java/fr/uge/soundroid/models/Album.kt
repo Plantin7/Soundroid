@@ -7,6 +7,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import fr.uge.soundroid.R
+import fr.uge.soundroid.repositories.SoundtrackRepository
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.Ignore
@@ -30,7 +31,10 @@ open class Album (
     var soundtracks = RealmList<Soundtrack>()
 
     fun addSoundtrack(soundtrack: Soundtrack): Album {
-        soundtracks.add(soundtrack)
+        if ( soundtracks.find { it.id == soundtrack.id } == null ) {
+            soundtracks.add(soundtrack)
+        }
+
         return this
     }
 

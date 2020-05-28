@@ -28,6 +28,7 @@ import fr.uge.soundroid.repositories.PlaylistRepository
 import fr.uge.soundroid.repositories.SoundtrackRepository
 import fr.uge.soundroid.utils.DatabaseService
 import fr.uge.soundroid.utils.RequiringPermissionActivity
+import fr.uge.soundroid.utils.SearchingService
 import fr.uge.soundroid.utils.WebsiteService
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
