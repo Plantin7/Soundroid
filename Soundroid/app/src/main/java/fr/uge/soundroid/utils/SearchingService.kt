@@ -24,7 +24,7 @@ object SearchingService {
             f = "note"
             o = Sort.DESCENDING
         } else if ( filterType == NUMBER ) {
-            f = "note"
+            f = "listeningNumber"
             o = Sort.DESCENDING
         }
 

@@ -16,11 +16,11 @@ object DatabaseService {
                     "#################################################################################\n")
 
             append("SOUNDTRACKS  :\n")
-            append("(id, title, path, note, seconds)\n")
+            append("(id, title, path, note, seconds, listeningNumber)\n")
             val soundtracks = SoundtrackRepository.findAll()
             for ( soundtrack in soundtracks ) {
                 soundtrack.apply {
-                    append("(${id}, ${title}, ${path}, ${note}, ${duration})\n")
+                    append("(${id}, ${title}, ${path}, ${note}, ${duration}, ${listeningNumber})\n")
 
                     append("Associated Album : ${album?.name}\n")
                     append("Associated Artist : ${artist?.name}\n")
