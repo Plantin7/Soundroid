@@ -15,9 +15,12 @@ import androidx.appcompat.app.AppCompatActivity
 import fr.uge.soundroid.R
 import fr.uge.soundroid.fragments.TagDialogFragment
 import fr.uge.soundroid.models.HistoryEntry
+import fr.uge.soundroid.models.Playlist
 import fr.uge.soundroid.models.Soundtrack
 import fr.uge.soundroid.notifications.MusicPlayerNotification
+import fr.uge.soundroid.repositories.AlbumRepository
 import fr.uge.soundroid.repositories.HistoryEntryRepository
+import fr.uge.soundroid.repositories.PlaylistRepository
 import fr.uge.soundroid.repositories.SoundtrackRepository
 import fr.uge.soundroid.repositories.SoundtrackRepository.findSoundtrackById
 import fr.uge.soundroid.services.ClearNotificationMusicPlayerService
@@ -73,7 +76,14 @@ class PlayerActivity : AppCompatActivity(), Playable {
         currentPosition = intent.getIntExtra("position", 0)
         soundtrack = findSoundtrackById(soundtrackId)
         soundtrack?.listeningNumber?.inc()
-        soundtrackList = SoundtrackRepository.findAll()
+
+        val playlistId = intent.getIntExtra("playlistId", 0)
+        val playlist = PlaylistRepository.findPlaylistById(playlistId)
+
+        val albumId = intent.getIntExtra("albumId", 0)
+        val album = AlbumRepository.findAlbumById(albumId)
+        soundtrackList = playlist?.soundtracks ?: (album?.soundtracks ?: SoundtrackRepository.findAll())
+
         updateActivityView(soundtrack)
         saveHistory(soundtrack)
 
