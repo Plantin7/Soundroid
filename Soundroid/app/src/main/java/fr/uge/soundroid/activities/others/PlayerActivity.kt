@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
+import android.util.Log
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.annotation.RequiresApi
@@ -75,7 +76,10 @@ class PlayerActivity : AppCompatActivity(), Playable {
         soundtrackId = intent.getIntExtra("soundtrackId", 0)
         currentPosition = intent.getIntExtra("position", 0)
         soundtrack = findSoundtrackById(soundtrackId)
-        soundtrack?.listeningNumber?.inc()
+        SoundtrackRepository.realm.executeTransaction {
+            soundtrack?.listeningNumber = soundtrack?.listeningNumber?.plus(1)
+            it.copyToRealmOrUpdate(soundtrack!!)
+        }
 
         val playlistId = intent.getIntExtra("playlistId", 0)
         val playlist = PlaylistRepository.findPlaylistById(playlistId)
