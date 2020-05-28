@@ -2,13 +2,10 @@ package fr.uge.soundroid.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.*
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -43,15 +40,6 @@ class SongListFragment : Fragment(), ItemClickListener {
         recyclerView.layoutManager = LinearLayoutManager(activity)
         songListAdapter.setClickListener(this)
 
-        /*Realm.getDefaultInstance().use {
-            it.executeTransactionAsync {
-                val ne = ArrayList(SoundtrackRepository.findSoundtracksList(HashMap()))
-                songListAdapter = SongListAdapter(ne)
-                recyclerView.adapter = songListAdapter
-                songListAdapter.setClickListener(this)
-            }
-        }*/
-        // TODO
         realm = Realm.getDefaultInstance()
         realmListener = RealmChangeListener {
             soundtrackList.clear()

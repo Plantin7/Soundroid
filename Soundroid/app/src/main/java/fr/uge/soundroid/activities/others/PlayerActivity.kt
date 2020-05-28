@@ -230,16 +230,11 @@ class PlayerActivity : AppCompatActivity(), Playable {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        //unbindService(connection)
-        //stopRefresh()
-        //mBound = false
-    }
-
     override fun onDestroy() {
         super.onDestroy()
+        unbindService(connection)
         stopRefresh()
+        mBound = false
         notificationManager?.cancelAll()
         unregisterReceiver(broadcastReceiver)
     }
@@ -300,6 +295,7 @@ class PlayerActivity : AppCompatActivity(), Playable {
             this@PlayerActivity, soundtrack!!,
             R.drawable.ic_pause_white_50dp, currentPosition, soundtrackList.size - 1
         )
+        saveHistory(soundtrack)
     }
 
     override fun onPlaySoundtrack() {
@@ -334,6 +330,7 @@ class PlayerActivity : AppCompatActivity(), Playable {
             this@PlayerActivity, soundtrack!!,
             R.drawable.ic_pause_white_50dp, currentPosition, soundtrackList.size - 1
         )
+        saveHistory(soundtrack)
     }
 
     private fun getPreviousPosition(position: Int): Int {
