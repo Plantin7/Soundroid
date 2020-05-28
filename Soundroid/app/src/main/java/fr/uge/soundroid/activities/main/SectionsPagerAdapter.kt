@@ -14,7 +14,6 @@ import fr.uge.soundroid.fragments.SongListFragment
 private val TAB_TITLES = arrayOf(
     R.string.Songs,
     R.string.Albums,
-    R.string.Artistes,
     R.string.Playlists,
     R.string.History
 )
@@ -30,12 +29,10 @@ class SectionsPagerAdapter(private val context: Context, private val fm: Fragmen
             0 -> SongListFragment()
             // Albums
             1 -> AlbumListFragment()
-            //Artists
-            2 -> SongListFragment()
             // Playlists
-            3 -> PlaylistListFragment()
+            2 -> PlaylistListFragment()
             //History
-            4 -> HistoryFragment()
+            3 -> HistoryFragment()
             else -> SongListFragment()
         }
     }
