@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import fr.uge.soundroid.R
 import fr.uge.soundroid.fragments.TagDialogFragment
 import fr.uge.soundroid.models.HistoryEntry
-import fr.uge.soundroid.models.Playlist
 import fr.uge.soundroid.models.Soundtrack
 import fr.uge.soundroid.notifications.MusicPlayerNotification
 import fr.uge.soundroid.repositories.AlbumRepository
@@ -25,7 +24,6 @@ import fr.uge.soundroid.repositories.SoundtrackRepository
 import fr.uge.soundroid.repositories.SoundtrackRepository.findSoundtrackById
 import fr.uge.soundroid.services.ClearNotificationMusicPlayerService
 import fr.uge.soundroid.services.MusicPlayerService
-import fr.uge.soundroid.services.ClearNotificationMusicPlayerService
 import fr.uge.soundroid.utils.WebsiteService
 import kotlinx.android.synthetic.main.activity_player.*
 import java.util.*
