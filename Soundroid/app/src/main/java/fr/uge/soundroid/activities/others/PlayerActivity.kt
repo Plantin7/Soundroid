@@ -46,6 +46,7 @@ class PlayerActivity : AppCompatActivity(), Playable {
     private var isRandom = false
 
     private var notificationManager: NotificationManager? = null
+    private var batteryLevel:Int = -1
 
     /** Defines callbacks for service binding, passed to bindService()  */
     private val connection = object : ServiceConnection {
@@ -99,6 +100,7 @@ class PlayerActivity : AppCompatActivity(), Playable {
 
         createChannel()
         registerReceiver(broadcastReceiver, IntentFilter("ACTION_SOUNDTRACK"))
+        registerReceiver(batteryBroadcastReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
         startService(Intent(baseContext, ClearNotificationMusicPlayerService::class.java))
 
         /** Play and Pause Music*/
@@ -187,6 +189,18 @@ class PlayerActivity : AppCompatActivity(), Playable {
         notificationManager?.createNotificationChannel(channel)
     }
 
+    private val batteryBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(arg0: Context?, intent: Intent) {
+            batteryLevel = intent.getIntExtra("level", 0)
+            if(batteryLevel < 10) {
+                unbindService(connection)
+                stopRefresh()
+                mBound = false
+                notificationManager?.cancelAll()
+                unregisterReceiver(broadcastReceiver)
+            }
+        }
+    }
 
     private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
