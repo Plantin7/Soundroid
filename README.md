@@ -25,3 +25,7 @@ Voici les différentes fonctionnamitées implémentées :
 - Possibilité de changer une musique depuis une notification
 - Lecture musical d'un album, d'une playlist, toutes les musiques
 - Possibilité de lire un album, d'une playlist, toutes les musiques de manière aléatoire.
+
+## Lien du git :
+
+https://github.com/Plantin7/Soundroid
