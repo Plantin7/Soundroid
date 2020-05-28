@@ -9,5 +9,4 @@
     android:background="@drawable/app_background"
     android:paddingTop="45dp">
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>

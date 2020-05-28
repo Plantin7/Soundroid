@@ -1,5 +1,6 @@
 package fr.uge.soundroid.activities.others
 
+import SwipeTouchListener
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.*
@@ -7,22 +8,30 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
-import android.util.Log
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import fr.uge.soundroid.R
 import fr.uge.soundroid.fragments.TagDialogFragment
+import fr.uge.soundroid.models.HistoryEntry
+import fr.uge.soundroid.models.Playlist
 import fr.uge.soundroid.models.Soundtrack
 import fr.uge.soundroid.notifications.MusicPlayerNotification
+import fr.uge.soundroid.repositories.AlbumRepository
+import fr.uge.soundroid.repositories.HistoryEntryRepository
+import fr.uge.soundroid.repositories.PlaylistRepository
 import fr.uge.soundroid.repositories.SoundtrackRepository
 import fr.uge.soundroid.repositories.SoundtrackRepository.findSoundtrackById
+import fr.uge.soundroid.services.ClearNotificationMusicPlayerService
 import fr.uge.soundroid.services.MusicPlayerService
 import fr.uge.soundroid.services.ClearNotificationMusicPlayerService
 import fr.uge.soundroid.utils.WebsiteService
 import kotlinx.android.synthetic.main.activity_player.*
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
+import kotlin.random.Random
 
 
 class PlayerActivity : AppCompatActivity(), Playable {
@@ -35,6 +44,7 @@ class PlayerActivity : AppCompatActivity(), Playable {
     private lateinit var musicPlayerService: MusicPlayerService
     private var counter = 0 // /!\ this counter is for changing music when the seek bar is finished
     var mBound = false
+    private var isRandom = false
 
     private var notificationManager: NotificationManager? = null
 
@@ -67,8 +77,17 @@ class PlayerActivity : AppCompatActivity(), Playable {
         soundtrackId = intent.getIntExtra("soundtrackId", 0)
         currentPosition = intent.getIntExtra("position", 0)
         soundtrack = findSoundtrackById(soundtrackId)
-        soundtrackList = SoundtrackRepository.findAll()
+        soundtrack?.listeningNumber?.inc()
+
+        val playlistId = intent.getIntExtra("playlistId", 0)
+        val playlist = PlaylistRepository.findPlaylistById(playlistId)
+
+        val albumId = intent.getIntExtra("albumId", 0)
+        val album = AlbumRepository.findAlbumById(albumId)
+        soundtrackList = playlist?.soundtracks ?: (album?.soundtracks ?: SoundtrackRepository.findAll())
+
         updateActivityView(soundtrack)
+        saveHistory(soundtrack)
 
         /* Send the HTTPRequest */
         val s = soundtrack
@@ -108,15 +127,6 @@ class PlayerActivity : AppCompatActivity(), Playable {
         /** Seek Bar Progress */
         player_seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if (progress == seekBar?.max) {
-                    stopRefresh()
-                    player_next_button.performClick() // Change music
-                    counter = 0
-                    return
-                }
-                if (progress == seekBar?.max?.minus(1)) {
-                    counter += 1
-                }
                 if (mBound && fromUser) {
                     musicPlayerService.seekTo(progress * 1000)
                 }
@@ -142,6 +152,27 @@ class PlayerActivity : AppCompatActivity(), Playable {
                 dialog.show(supportFragmentManager, "TagDialog")
             }
         }
+        player_random_button.setOnClickListener{
+            if(!isRandom) {
+                isRandom = true
+                player_random_button.setBackgroundResource(R.drawable.ic_random__soundtrack_selected_50dp)
+            }
+            else {
+                isRandom = false
+                player_random_button.setBackgroundResource(R.drawable.ic_random__soundtrack_50dp)
+            }
+        }
+
+        player_album_picture.setOnTouchListener (
+            object : SwipeTouchListener(this@PlayerActivity) {
+                override fun onSwipeLeft() {
+                    onPreviousSoundtrack()
+                }
+                override fun onSwipeRight() {
+                    onNextSoundtrack()
+                }
+            }
+        )
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -206,7 +237,6 @@ class PlayerActivity : AppCompatActivity(), Playable {
         //unbindService(connection)
         //stopRefresh()
         //mBound = false
-        Log.d("Testy", "Stop")
     }
 
     override fun onDestroy() {
@@ -223,9 +253,14 @@ class PlayerActivity : AppCompatActivity(), Playable {
         if (mBound) {
             updateSeekBar(currentPosition)
         }
+        if ((currentPosition / 1000) == player_seekBar?.max) {
+            stopRefresh()
+            player_next_button.performClick() // Change music
+            counter = 0
+        }
         if ((currentPosition / 1000) == player_seekBar?.max?.minus(1)) {
             counter += 1
-            if (counter == 3) {
+            if (counter == 2) { // because the currentPosition is less seek_bar.max
                 stopRefresh()
                 player_next_button.performClick() // Change music
                 counter = 0
@@ -257,7 +292,8 @@ class PlayerActivity : AppCompatActivity(), Playable {
     }
 
     override fun onPreviousSoundtrack() {
-        currentPosition = getPreviousPosition(currentPosition)
+        if(!isRandom) currentPosition = getPreviousPosition(currentPosition)
+        else generateRandomSoundtrack()
         val tmpSoundtrack = soundtrackList[currentPosition]
         soundtrackId = tmpSoundtrack.id!!
         soundtrack = tmpSoundtrack
@@ -289,7 +325,9 @@ class PlayerActivity : AppCompatActivity(), Playable {
     }
 
     override fun onNextSoundtrack() {
-        currentPosition = getNextPosition(currentPosition)
+        if(!isRandom) currentPosition = getNextPosition(currentPosition)
+        else generateRandomSoundtrack()
+
         val tmpSoundtrack = soundtrackList[currentPosition]
         soundtrackId = tmpSoundtrack.id!!
         soundtrack = tmpSoundtrack
@@ -312,5 +350,29 @@ class PlayerActivity : AppCompatActivity(), Playable {
             return 0
         }
         return position + 1
+    }
+
+    private fun generateRandomSoundtrack() {
+        val randomPosition = Random.nextInt(soundtrackList.size)
+        currentPosition = randomPosition
+    }
+
+    private fun saveHistory(soundtrackToSave: Soundtrack?) {
+        val historyList = ArrayList(HistoryEntryRepository.findAll())
+        val soundtrackIsFounded = historyList.find {
+            it.soundtrack == soundtrackToSave
+        }
+
+        if(soundtrackIsFounded != null) {
+            historyList.remove(soundtrackIsFounded)
+            HistoryEntryRepository.deleteHistoryEntry(soundtrackIsFounded)
+        }
+
+        val historyEntry = HistoryEntry().apply {
+            date = Date()
+            soundtrack = soundtrackToSave
+            initPrimaryKey()
+        }
+        HistoryEntryRepository.saveHistoryEntry(historyEntry)
     }
 }

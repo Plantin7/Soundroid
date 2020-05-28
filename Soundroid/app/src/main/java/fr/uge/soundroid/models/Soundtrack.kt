@@ -38,16 +38,6 @@ open class Soundtrack(
         return this
     }
 
-    fun removeTag(tag: Tag) {
-        tags.remove(tag)
-    }
-    // TODO Delete , use for debug
-    fun printTagList() {
-        for (tag in tags){
-            Log.d("Testy", "[DEBUG] " + tag.name!!)
-        }
-    }
-
     fun addTagList(list: List<Tag>): Soundtrack {
         for ( soundtrack in list ) {
             addTag(soundtrack)

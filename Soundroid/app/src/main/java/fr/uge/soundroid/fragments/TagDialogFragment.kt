@@ -18,6 +18,7 @@ import fr.uge.soundroid.adapters.TagListAdapter.RemoveTagListener
 import fr.uge.soundroid.models.Soundtrack
 import fr.uge.soundroid.models.Tag
 import fr.uge.soundroid.repositories.SoundtrackRepository
+import fr.uge.soundroid.repositories.TagRepository
 import io.realm.Realm
 
 
@@ -83,26 +84,25 @@ class TagDialogFragment : DialogFragment(), RemoveTagListener {
     }
 
     private fun addNewTag(tagName: String) {
-        Realm.getDefaultInstance().executeTransaction { realm: Realm? ->
-            val newTag = Tag().apply { name = tagName; initPrimaryKey() }
-            tags.add(newTag)
-            tagListAdapter.notifyItemInserted(tags.size - 1)
+        val newTag = Tag().apply { name = tagName; initPrimaryKey() }
+
+        Realm.getDefaultInstance().executeTransaction { realm: Realm ->
             soundtrack?.addTag(newTag)
-            //realm?.copyToRealmOrUpdate(soundtrack!!)
+            realm.copyToRealmOrUpdate(soundtrack!!)
         }
-        soundtrack?.printTagList()
+
+        tags.add(newTag)
+        tagListAdapter.notifyItemInserted(tags.size - 1)
     }
 
     override fun removeTag(tag: Tag) {
-        Realm.getDefaultInstance().executeTransaction { realm: Realm? ->
-            val positionTag = tags.indexOf(tag)
-            tags.remove(tag)
-            tagListAdapter.notifyItemRemoved(positionTag)
-            soundtrack?.removeTag(tag)
-            //realm?.copyToRealmOrUpdate(soundtrack!!)
+        val positionTag = tags.indexOf(tag)
+        Realm.getDefaultInstance().executeTransaction { realm: Realm ->
+            soundtrack?.tags?.remove(tag)
+            realm.copyToRealmOrUpdate(soundtrack!!)
         }
-
-        soundtrack?.printTagList()
+        tags.remove(tag)
+        tagListAdapter.notifyItemRemoved(positionTag)
         Toast.makeText(context, "Tag " + tag.name + " has been removed !", Toast.LENGTH_SHORT)
             .show()
     }

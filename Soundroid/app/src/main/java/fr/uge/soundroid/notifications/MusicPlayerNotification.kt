@@ -1,14 +1,18 @@
 package fr.uge.soundroid.notifications
 
 import android.app.Notification
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.media.app.NotificationCompat.MediaStyle
 import fr.uge.soundroid.R
+import fr.uge.soundroid.activities.others.PlayerActivity
 import fr.uge.soundroid.models.Soundtrack
 import fr.uge.soundroid.services.MusicNotificationActionPlayerService
 
@@ -37,6 +41,8 @@ class MusicPlayerNotification {
             val pendingIntentNext = PendingIntent.getBroadcast(context, 0,intentNext, PendingIntent.FLAG_UPDATE_CURRENT)
             val drawableNext = R.drawable.ic_skip_next_white_50dp
 
+            val resultIntent = Intent(context, PlayerActivity::class.java).setAction(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            val pendingIntent = PendingIntent.getActivity(context, 0,resultIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
             notification = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_music_note)
@@ -50,6 +56,7 @@ class MusicPlayerNotification {
                 .addAction(drawableNext, "Next", pendingIntentNext)
                 .setStyle(MediaStyle().setShowActionsInCompactView(0, 1, 2).setMediaSession(mediaSessionCompat.sessionToken))
                 .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setContentIntent(pendingIntent)
                 .build()
 
             notificationManagerCompat.notify(1, notification)
